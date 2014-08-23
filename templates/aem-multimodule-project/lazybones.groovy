@@ -19,6 +19,12 @@ def askBoolean(String message, String defaultValue, String propertyName) {
     return val
 }
 
+def askBoolean(String message, String defaultValue) {
+    String val = ask(message, defaultValue)
+    val = toBoolean(val)
+    return val
+}
+
 def askFromList(String message, String defaultValue, String propertyName, options) {
     String fullMessage = "${message} Choices are ${options}: "
     String val = ""
@@ -75,6 +81,7 @@ if (props.aemVersion == "6.0") {
 
 def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL, to: NameType.HYPHENATED).toLowerCase()
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
+props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
 
 props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
 props.contentArtifactId = ask("Maven artifact ID for the generated content package project [${props.artifactId}-content]: ", "${props.artifactId}-content" as String, "contentArtifactId")
@@ -95,6 +102,16 @@ if (props.includeAcsAemCommons) {
         props.contentDependencies.add(content)
     }
     props.enableErrorHandler = askBoolean("Do you want to enable the ACS AEM Commons Error Handler? [yes]: ", "yes", "enableErrorHandler")
+
+    if (props.enableErrorHandler) {
+        props.errorHandler = [:]
+        String defaultErrorPath = "/content/${props.contentFolderName}/errors/404"
+        props.errorHandler.defaultErrorsPath = ask("What is the path to your default error page? [${defaultErrorPath}]: ", defaultErrorPath);
+        if (askBoolean("Do you want to specify a error page directory for /content/${props.contentFolderName}? [no]: ", "no")) {
+            props.errorHandler.sitePath = "/content/${props.contentFolderName}" as String
+            props.errorHandler.errorFolder = ask("What is it? [errors]: ", "errors");
+        }
+    }
 }
 
 props.createRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories? [yes]: ", "yes", "createRunModeConfigFolders")
@@ -124,8 +141,24 @@ if (props.enableErrorHandler) {
     def errorHandlerDir = new File(projectDir, "content/src/main/content/jcr_root/apps/sling/servlet/errorhandler")
     errorHandlerDir.mkdirs()
 
-   writeToFile(errorHandlerDir, "404.jsp", """<%@page session="false"%><%
+    writeToFile(errorHandlerDir, "404.jsp", """<%@page session="false"%><%
 %><%@include file="/apps/acs-commons/components/utilities/errorpagehandler/404.jsp" %>""")
-   writeToFile(errorHandlerDir, "default.jsp", """<%@page session="false"%><%
+    writeToFile(errorHandlerDir, "default.jsp", """<%@page session="false"%><%
 %><%@include file="/apps/acs-commons/components/utilities/errorpagehandler/default.jsp" %>""")
+
+    def errorHandlerConfig = """<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"
+    enabled="{Boolean}true"
+    error-page.system-path="${props.errorHandler.defaultErrorsPath}"
+""";
+
+   if (props.errorHandler.sitePath && props.errorHandler.errorFolder) {
+       errorHandlerConfig += """\
+    paths="[${props.errorHandler.sitePath}:${props.errorHandler.errorFolder}]"
+""";
+   }
+   errorHandlerConfig += """\
+    serve-authenticated-from-cache="{Boolean}true"/>
+""";
+    writeToFile(configDir, "com.adobe.acs.commons.errorpagehandler.impl.ErrorPageHandlerImpl.xml", errorHandlerConfig)
 }
