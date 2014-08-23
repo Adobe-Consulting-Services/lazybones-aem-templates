@@ -56,6 +56,29 @@
                 </configuration>
             </plugin>
 
+<% if (enableCodeQuality) { %>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jslint-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jslint</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourceJsFolder>src/main/content/jcr_root</sourceJsFolder>
+                    <failOnIssues>true</failOnIssues>
+                    <predefinedVars>jQuery,window,\$</predefinedVars>
+                    <excludes>
+                        <exclude>**/extensions/**/*.js</exclude>
+                        <exclude>**/vendor/**/*.js</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+<% } %>
+
             <plugin>
                 <groupId>com.day.jcr.vault</groupId>
                 <artifactId>content-package-maven-plugin</artifactId>
