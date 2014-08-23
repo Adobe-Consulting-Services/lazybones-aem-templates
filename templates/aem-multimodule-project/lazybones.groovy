@@ -53,6 +53,15 @@ props.rootDependencies = [ ]
 props.bundleDependencies = []
 props.contentDependencies = []
 
+def osgiCore = dependency("org.osgi", "org.osgi.core", "4.2.0")
+def osgiCompendium = dependency("org.osgi", "org.osgi.compendium", "4.2.0")
+def slf4j = dependency("org.slf4j", "slf4j-api", "1.6.4")
+def scrAnnotations = dependency("org.apache.felix", "org.apache.felix.scr.annotations", "1.9.8")
+
+props.rootDependencies.addAll([osgiCore, osgiCompendium, slf4j, scrAnnotations])
+props.bundleDependencies.addAll([osgiCore, osgiCompendium, slf4j, scrAnnotations])
+props.contentDependencies.addAll([osgiCore, osgiCompendium, slf4j])
+
 def junit = dependency("junit", "junit", "4.11", "jar", "test")
 props.rootDependencies.add(junit)
 props.bundleDependencies.add(junit)
