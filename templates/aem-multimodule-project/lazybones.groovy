@@ -3,12 +3,10 @@ import org.apache.commons.io.FileUtils
 
 def toBoolean(String val) {
     val = val.toLowerCase()
-    if (val.startsWith("n")) {
-        val = false
-    } else if (val.startsWith("y")) {
-        val = true
+    if (val.startsWith("n") || val.equals("false")) {
+        return ''
     } else {
-        val = val as Boolean
+        return val
     }
 }
 
@@ -21,8 +19,7 @@ def askBoolean(String message, String defaultValue, String propertyName) {
 
 def askBoolean(String message, String defaultValue) {
     String val = ask(message, defaultValue)
-    val = toBoolean(val)
-    return val
+    return toBoolean(val)
 }
 
 def askFromList(String message, String defaultValue, String propertyName, options) {
