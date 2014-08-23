@@ -104,7 +104,8 @@ if (props.includeAcsAemCommons) {
         props.errorHandler = [:]
         String defaultErrorPath = "/content/${props.contentFolderName}/errors/404"
         props.errorHandler.defaultErrorsPath = ask("What is the path to your default error page? [${defaultErrorPath}]: ", defaultErrorPath);
-        if (askBoolean("Do you want to specify a error page directory for /content/${props.contentFolderName}? [no]: ", "no")) {
+        def defineErrorPageFolder = askBoolean("Do you want to specify a error page folder for /content/${props.contentFolderName}? [no]: ", "no")
+        if (defineErrorPageFolder) {
             props.errorHandler.sitePath = "/content/${props.contentFolderName}" as String
             props.errorHandler.errorFolder = ask("What is it? [errors]: ", "errors");
         }
@@ -143,7 +144,8 @@ if (props.enableErrorHandler) {
     writeToFile(errorHandlerDir, "default.jsp", """<%@page session="false"%><%
 %><%@include file="/apps/acs-commons/components/utilities/errorpagehandler/default.jsp" %>""")
 
-    def errorHandlerConfig = """<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    def errorHandlerConfig = """\
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="sling:OsgiConfig"
     enabled="{Boolean}true"
     error-page.system-path="${props.errorHandler.defaultErrorsPath}"
