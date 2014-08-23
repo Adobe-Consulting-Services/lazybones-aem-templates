@@ -110,6 +110,9 @@ if (props.includeAcsAemCommons) {
             props.errorHandler.errorFolder = ask("What is it? [errors]: ", "errors");
         }
     }
+
+    props.enablePagesReferenceProvider = askBoolean("Do you want to enable the ACS AEM Commons Pages Reference Provider? [yes]: ", "yes");
+    props.enableDesignReferenceProvider = askBoolean("Do you want to enable the ACS AEM Commons Design Reference Provider? [yes]: ", "yes");
 }
 
 props.createRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories? [yes]: ", "yes", "createRunModeConfigFolders")
@@ -160,4 +163,17 @@ if (props.enableErrorHandler) {
     serve-authenticated-from-cache="{Boolean}true"/>
 """;
     writeToFile(configDir, "com.adobe.acs.commons.errorpagehandler.impl.ErrorPageHandlerImpl.xml", errorHandlerConfig)
+}
+
+def emptyConfig = """\
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"/>
+"""
+
+if (props.enablePagesReferenceProvider) {
+    writeToFile(configDir, "com.adobe.acs.commons.wcm.impl.PagesReferenceProvider.xml", emptyConfig);
+}
+
+if (props.enableDesignReferenceProvider) {
+    writeToFile(configDir, "com.adobe.acs.commons.wcm.impl.DesignReferenceProvider.xml", emptyConfig);
 }
