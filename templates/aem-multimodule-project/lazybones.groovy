@@ -89,6 +89,9 @@ if (props.createDesign) {
     props.enableDhlm = ''
 }
 
+props.createMainClientLib = askBoolean("Do you want to create 'main' client library (at /etc/clientlibs/${props.appsFolderName}/main having the category ${props.appsFolderName}.main)? [yes]: ", "yes")
+props.createDependenciesClientLib = askBoolean("Do you want to create 'dependencies' client library (at /etc/clientlibs/${props.appsFolderName}/dependencies having the category ${props.appsFolderName}.dependencies)? [yes]: ", "yes")
+
 props.enableCodeQuality = askBoolean("Include ACS standard code quality settings (PMD, Findbugs, Checkstyle, JSLint, jacoco)? [yes]: ", "yes")
 
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
@@ -121,9 +124,13 @@ if (props.includeAcsAemCommons) {
 
     props.enablePagesReferenceProvider = askBoolean("Do you want to enable the ACS AEM Commons Pages Reference Provider? [yes]: ", "yes");
     props.enableDesignReferenceProvider = askBoolean("Do you want to enable the ACS AEM Commons Design Reference Provider? [yes]: ", "yes");
+
+    if (props.createDesign && (props.createMainClientLib || props.createDependenciesClientLib)) {
+        props.enableDhlm = askBoolean("Do you want to enable the ACS AEM Commons Design Html Library Manager? [yes]: ", "yes")
+    }
 }
 
-props.createRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories? [yes]: ", "yes", "createRunModeConfigFolders")
+props.createRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories for each environment? [yes]: ", "yes", "createRunModeConfigFolders")
 
 processTemplates "README.md", props
 processTemplates "**/pom.xml", props
@@ -141,6 +148,10 @@ templatesDir.mkdirs()
 
 def configDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config")
 configDir.mkdirs()
+def authorConfigDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config.author")
+authorConfigDir.mkdirs()
+def publishConfigDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish")
+publishConfigDir.mkdirs()
 
 def installDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/install")
 installDir.mkdirs()
@@ -149,7 +160,17 @@ writeToFile(installDir, ".vltignore", "*.jar")
 if (props.createDesign) {
     def designDir = new File(projectDir, "content/src/main/content/jcr_root/etc/designs/${props.designFolderName}")
     designDir.mkdirs()
-    writeToFile(designDir, ".content.xml", """\
+    if (props.enableDhlm) {
+        def headCss = '', headJs = '', bodyJs = ''
+        if (props.createMainClientLib) {
+            headCss = "${props.appsFolderName}.main"
+            bodyJs = "${props.appsFolderName}.main"
+        }
+        if (props.createDependenciesClientLib) {
+            headJs = "${props.appsFolderName}.dependencies"
+        }
+
+        writeToFile(designDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
@@ -159,9 +180,80 @@ if (props.createDesign) {
         jcr:primaryType="cq:PageContent"
         jcr:title="${props.projectName}"
         sling:resourceType="wcm/core/components/designer">
+        <clientlibs
+            jcr:lastModified="{Date}2013-10-21T08:55:12.602-04:00"
+            jcr:lastModifiedBy="admin"
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="acs-commons/components/utilities/designer/clientlibsmanager">
+            <head
+                jcr:primaryType="nt:unstructured"
+                css="${headCss}"
+                js="${headJs}"/>
+            <body
+                jcr:primaryType="nt:unstructured"
+                js="${bodyJs}"/>
+        </clientlibs>
     </jcr:content>
 </jcr:root>
 """)
+    } else {
+        writeToFile(designDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:doctype="html_5"
+        cq:template="/libs/wcm/core/templates/designpage"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="${props.projectName}"
+        sling:resourceType="wcm/core/components/designer" />
+</jcr:root>
+""")
+    }
+}
+
+if (props.createMainClientLib || props.createDependenciesClientLib) {
+    def clientLibFolder = new File(projectDir, "content/src/main/content/jcr_root/etc/clientlibs/${props.appsFolderName}")
+    clientLibFolder.mkdirs()
+    if (props.createMainClientLib) {
+        def mainClientLibFolder = new File(clientLibFolder, "main")
+        mainClientLibFolder.mkdirs()
+        writeToFile(mainClientLibFolder, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:ClientLibraryFolder"
+    categories="${props.appsFolderName}.main"/>
+""")
+        writeToFile(mainClientLibFolder, "readme.txt", """\
+This client library should be used to store your site's JavaScript and CSS.
+In general, you should load the CSS in the head and the JS just before the end of the body.
+""")
+        new File(mainClientLibFolder, "css").mkdir()
+        new File(mainClientLibFolder, "js").mkdir()
+
+        writeToFile(mainClientLibFolder, "js.txt", """\
+#base=js
+""")
+        writeToFile(mainClientLibFolder, "css.txt", """\
+#base=css
+""")
+    }
+    if (props.createDependenciesClientLib) {
+        def depClientLibFolder = new File(clientLibFolder, "dependencies")
+        depClientLibFolder.mkdirs()
+        writeToFile(depClientLibFolder, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:ClientLibraryFolder"
+    categories="${props.appsFolderName}.dependencies
+    embed="[jquery,granite.utils,granite.jquery,cq.jquery,granite.shared,cq.shared,underscore]"/>
+""")
+        writeToFile(depClientLibFolder, "readme.txt", """\
+This client library should be used to embed dependencies. It is pre-stocked with a handful of
+common AEM dependencies, but you should modify to meet your needs. In general, this will need
+to be loaded in the head of your page in order to reduce extra HTTP calls.
+""")
+    }
 }
 
 if (props.enableErrorHandler) {
@@ -189,6 +281,19 @@ if (props.enableErrorHandler) {
     serve-authenticated-from-cache="{Boolean}true"/>
 """;
     writeToFile(configDir, "com.adobe.acs.commons.errorpagehandler.impl.ErrorPageHandlerImpl.xml", errorHandlerConfig)
+}
+
+if (props.enableDhlm) {
+    writeToFile(authorConfigDir, "com.adobe.acs.commons.util.impl.DelegatingServletFactoryImpl-DesignerClientLibsManager.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"
+    prop.target-resource-type="acs-commons/components/utilities/designer"
+    sling.servlet.extensions="html"
+    sling.servlet.methods="GET"
+    sling.servlet.resourceTypes="wcm/core/components/designer"
+    sling.servlet.selectors=""/>
+""")
 }
 
 def emptyConfig = """\

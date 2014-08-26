@@ -22,5 +22,12 @@
             root="/apps/sling/servlet/errorhandler"
             rules="[]"/>
 <% } %>
+<% if (createMainClientLib || createDependenciesClientLib) { %>
+        <f2
+            jcr:primaryType="nt:unstructured"
+            mode="replace"
+            root="/etc/clientlibs/${appsFolderName}"
+            rules="[]"/>
+<% } %>
     </filter>
 </jcr:root>

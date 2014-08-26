@@ -4,6 +4,9 @@
 <% if (enableErrorHandler) { %>
     <filter root="/apps/sling/servlet/errorhandler"/>
 <% } %>
+<% if (createMainClientLib || createDependenciesClientLib) { %>
+    <filter root="/etc/clientlibs/${appsFolderName}"/>
+<% } %>
 <% if (createDesign) { %>
     <filter root="/etc/designs/${designFolderName}">
         <include pattern="/etc/designs/${designFolderName}/jcr:content"/>
