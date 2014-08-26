@@ -4,4 +4,13 @@
 <% if (enableErrorHandler) { %>
     <filter root="/apps/sling/servlet/errorhandler"/>
 <% } %>
+<% if (createDesign) { %>
+    <filter root="/etc/designs/${designFolderName}">
+        <include pattern="/etc/designs/${designFolderName}/jcr:content"/>
+<% if (enableDhlm) { %>
+        <include pattern="/etc/designs/${designFolderName}/jcr:content/clientlibs"/>
+        <include pattern="/etc/designs/${designFolderName}/jcr:content/clientlibs/.*"/>
+<% } %>
+    </filter>
+<% } %>
 </workspaceFilter>
