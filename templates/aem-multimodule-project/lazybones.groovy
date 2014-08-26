@@ -149,7 +149,16 @@ if (props.includeAcsAemCommons) {
     }
 }
 
-props.createRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories for each environment? [yes]: ", "yes", "createRunModeConfigFolders")
+def createEnvRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories for each environment? [yes]: ", "yes", "createRunModeConfigFolders")
+def envNames = []
+def createAuthorAndPublishPerEnv = ''
+if (createEnvRunModeConfigFolders) {
+    envNames = ask("What are the environment names (comma-delimited list)? [localdev,dev,qa,stage,prod]: ", "localdev,dev,qa,stage,prod").split(/,/)
+    for (int i = 0; i < envNames.length; i++) {
+        envNames[i] = envNames[i].trim()
+    }
+    createAuthorAndPublishPerEnv = askBoolean("Create author and publish runmode directories per environment? [yes]: ", "yes")
+}
 
 processTemplates "README.md", props
 processTemplates "**/pom.xml", props
@@ -171,6 +180,19 @@ def authorConfigDir = new File(projectDir, "content/src/main/content/jcr_root/ap
 authorConfigDir.mkdirs()
 def publishConfigDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish")
 publishConfigDir.mkdirs()
+
+if (createEnvRunModeConfigFolders) {
+    for (int i = 0; i < envNames.length; i++) {
+        def dir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config.${envNames[i]}")
+        dir.mkdir()
+        if (createAuthorAndPublishPerEnv) {
+            dir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config.author.${envNames[i]}")
+            dir.mkdir()
+            dir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish.${envNames[i]}")
+            dir.mkdir()
+        }
+    }
+}
 
 def installDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/install")
 installDir.mkdirs()
