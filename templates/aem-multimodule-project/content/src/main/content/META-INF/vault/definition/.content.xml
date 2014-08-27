@@ -15,7 +15,7 @@
             mode="replace"
             root="/apps/${appsFolderName}"
             rules="[]"/>
-<% if (enableErrorHandler) { %>
+<% if (includeAcsAemCommons && enableErrorHandler) { %>
         <f1
             jcr:primaryType="nt:unstructured"
             mode="replace"

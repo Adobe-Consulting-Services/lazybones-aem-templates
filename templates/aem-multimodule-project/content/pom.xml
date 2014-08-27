@@ -93,7 +93,7 @@
                             <target>/apps/${appsFolderName}/install</target>
                         </embedded>
                     </embeddeds>
-<% if (includeAcsAemCommonsSubPackage) {%>
+<% if (includeAcsAemCommons && includeAcsAemCommonsSubPackage) {%>
                     <subPackages>
                         <subPackage>
                             <groupId>com.adobe.acs</groupId>
