@@ -75,35 +75,46 @@ props.rootDependencies = [ ]
 props.bundleDependencies = []
 props.contentDependencies = []
 
+// common across 5.6.1 and 6.0
 def osgiCore = dependency("org.osgi", "org.osgi.core", "4.2.0")
 def osgiCompendium = dependency("org.osgi", "org.osgi.compendium", "4.2.0")
 def scrAnnotations = dependency("org.apache.felix", "org.apache.felix.scr.annotations", "1.9.8")
 def servletApi = dependency("javax.servlet", "servlet-api", "2.5")
+def commonsLang3 = dependency("org.apache.commons", "commons-lang3", "3.0.1")
+def commonsLang2 = dependency("commons-lang", "commons-lang", "2.5")
+def commonsCodec = dependency("commons-codec", "commons-codec", "1.5")
+def commonsIo = dependency("commons-io", "commons-io", "2.4")
+def jstl = dependency("com.day.commons", "day-commons-jstl", "1.1.4")
+def jsp = dependency("javax.servlet.jsp", "jsp-api", "2.1")
+def jcr = dependency("javax.jcr", "jcr", "2.0")
 
-props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi])
-props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi])
-props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi])
+props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jstl, jsp, jcr])
+props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jsp, jcr])
+props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
 
 def junit = dependency("junit", "junit", "4.11", "jar", "test")
-props.rootDependencies.add(junit)
-props.bundleDependencies.add(junit)
+def junitAddons = dependency("junit-addons", "junit-addons", "1.4", "jar", "test")
+props.rootDependencies.addAll([junit, junitAddons])
+props.bundleDependencies.addAll([junit, junitAddons])
 
 if (props.aemVersion == "6.0") {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM_API_VERSION)
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
+    def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
     def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
     def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.2.0")
 
-    props.rootDependencies.addAll([apiDep, slf4j, wcmTaglib, slingTaglib])
-    props.bundleDependencies.addAll([apiDep, slf4j])
+    props.rootDependencies.addAll([apiDep, slf4j, slf4jSimple, wcmTaglib, slingTaglib])
+    props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
     props.contentDependencies.addAll([apiDep, slf4j, wcmTaglib, slingTaglib])
 } else if (props.aemVersion == "5.6.1") {
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.6.4")
+    def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.6.4", "jar", "test")
     def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
     def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.1.8")
 
-    props.rootDependencies.addAll([slf4j, wcmTaglib, slingTaglib])
-    props.bundleDependencies.addAll([slf4j])
+    props.rootDependencies.addAll([slf4j, wcmTaglib, slingTaglib, slf4jSimple])
+    props.bundleDependencies.addAll([slf4j, slf4jSimple])
     props.contentDependencies.addAll([slf4j, wcmTaglib, slingTaglib])
 }
 
@@ -124,6 +135,12 @@ props.createMainClientLib = askBoolean("Do you want to create 'main' client libr
 props.createDependenciesClientLib = askBoolean("Do you want to create 'dependencies' client library (at /etc/clientlibs/${props.appsFolderName}/dependencies having the category ${props.appsFolderName}.dependencies)? [yes]: ", "yes")
 
 props.enableCodeQuality = askBoolean("Include ACS standard code quality settings (PMD, Findbugs, Checkstyle, JSLint, jacoco)? [yes]: ", "yes")
+if (props.enableCodeQuality) {
+    def jsr305 = dependency("com.google.code.findbugs", "jsr305", "3.0.0")
+
+    props.rootDependencies.add(jsr305)
+    props.bundleDependencies.add(jsr305)
+}
 
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
 if (props.includeAcsAemCommons) {
