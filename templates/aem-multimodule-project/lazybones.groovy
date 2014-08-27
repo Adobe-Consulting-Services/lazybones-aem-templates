@@ -181,6 +181,8 @@ if (props.includeAcsAemCommons) {
     if (props.createDesign && (props.createMainClientLib || props.createDependenciesClientLib)) {
         props.enableDhlm = askBoolean("Do you want to enable the ACS AEM Commons Design Html Library Manager? [yes]: ", "yes")
     }
+
+    props.enableVersionedClientLibs = askBoolean("Do you want to enable the ACS AEM Commons Versioned Clientlib Rewriter? [yes]: ", "yes")
 }
 
 def createEnvRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories for each environment? [yes]: ", "yes", "createRunModeConfigFolders")
@@ -382,4 +384,33 @@ if (props.enablePagesReferenceProvider) {
 
 if (props.enableDesignReferenceProvider) {
     writeToFile(configDir, "com.adobe.acs.commons.wcm.impl.DesignReferenceProvider.xml", emptyConfig);
+}
+
+if (props.enableVersionedClientLibs) {
+    def rewriterDir = new File(configDir, "rewriter/default")
+    rewriterDir.mkdirs()
+    writeToFile(rewriterDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    contentTypes="[text/html]"
+    enabled="{Boolean}true"
+    generatorType="htmlparser"
+    order="-1"
+    serializerType="htmlwriter"
+    transformerTypes="[linkchecker,mobile,mobiledebug,contentsync,versioned-clientlibs]">
+    <transformer-mobile
+        jcr:primaryType="nt:unstructured"
+        component-optional="{Boolean}true"/>
+    <transformer-mobiledebug
+        jcr:primaryType="nt:unstructured"
+        component-optional="{Boolean}true"/>
+    <transformer-contentsync
+        jcr:primaryType="nt:unstructured"
+        component-optional="{Boolean}true"/>
+    <generator-htmlparser
+        jcr:primaryType="nt:unstructured"
+        includeTags="[A,/A,IMG,AREA,FORM,BASE,LINK,SCRIPT,BODY,/BODY]"/>
+</jcr:root>
+""")
 }
