@@ -35,18 +35,18 @@
     </properties>
 
     <dependencyManagement>
-        <dependencies>
-<% for (dependency in rootDependencies) { %>
+        <dependencies><%
+%><% for (dependency in rootDependencies) { %>
             <dependency>
                 <groupId>${dependency.groupId}</groupId>
                 <artifactId>${dependency.artifactId}</artifactId>
                 <version>${dependency.version}</version>
-                <scope>${dependency.scope}</scope>
-<% if (dependency.type != "jar") { %>
-                <type>${dependency.type}</type>
-<% } %>
-            </dependency>
-<% } %>
+                <scope>${dependency.scope}</scope><%
+%><% if (dependency.type != "jar") { %>
+                <type>${dependency.type}</type><%
+%><% } %>
+            </dependency><%
+%><% } %>
         </dependencies>
     </dependencyManagement>
 

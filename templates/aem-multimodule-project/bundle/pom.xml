@@ -19,13 +19,13 @@
     <packaging>bundle</packaging>
     <name>${projectName} Bundle</name>
 
-    <dependencies>
-<% for (dependency in bundleDependencies) { %>
+    <dependencies><%
+%><% for (dependency in bundleDependencies) { %>
         <dependency>
             <groupId>${dependency.groupId}</groupId>
             <artifactId>${dependency.artifactId}</artifactId>
-        </dependency>
-<% } %>
+        </dependency><%
+%><% } %>
     </dependencies>
 
     <!-- ====================================================================== -->

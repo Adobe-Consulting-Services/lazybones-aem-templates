@@ -24,16 +24,16 @@
             <groupId>${groupId}</groupId>
             <artifactId>${bundleArtifactId}</artifactId>
             <version>\${version}</version>
-        </dependency>
-<% for (dependency in contentDependencies) { %>
+        </dependency><%
+%><% for (dependency in contentDependencies) { %>
         <dependency>
             <groupId>${dependency.groupId}</groupId>
-            <artifactId>${dependency.artifactId}</artifactId>
-<% if (dependency.type != "jar") { %>
-            <type>${dependency.type}</type>
-<% } %>
-        </dependency>
-<% } %>
+            <artifactId>${dependency.artifactId}</artifactId><%
+%><% if (dependency.type != "jar") { %>
+            <type>${dependency.type}</type><%
+%><% } %>
+        </dependency><%
+%><% } %>
     </dependencies>
     <build>
         <resources>
