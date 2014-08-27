@@ -77,12 +77,12 @@ props.contentDependencies = []
 
 def osgiCore = dependency("org.osgi", "org.osgi.core", "4.2.0")
 def osgiCompendium = dependency("org.osgi", "org.osgi.compendium", "4.2.0")
-def slf4j = dependency("org.slf4j", "slf4j-api", "1.6.4")
 def scrAnnotations = dependency("org.apache.felix", "org.apache.felix.scr.annotations", "1.9.8")
+def servletApi = dependency("javax.servlet", "servlet-api", "2.5")
 
-props.rootDependencies.addAll([osgiCore, osgiCompendium, slf4j, scrAnnotations])
-props.bundleDependencies.addAll([osgiCore, osgiCompendium, slf4j, scrAnnotations])
-props.contentDependencies.addAll([osgiCore, osgiCompendium, slf4j])
+props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi])
+props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi])
+props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi])
 
 def junit = dependency("junit", "junit", "4.11", "jar", "test")
 props.rootDependencies.add(junit)
@@ -90,9 +90,21 @@ props.bundleDependencies.add(junit)
 
 if (props.aemVersion == "6.0") {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM_API_VERSION)
-    props.rootDependencies.add(apiDep)
-    props.bundleDependencies.add(apiDep)
-    props.contentDependencies.add(apiDep)
+    def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
+    def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
+    def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.2.0")
+
+    props.rootDependencies.addAll([apiDep, slf4j, wcmTaglib, slingTaglib])
+    props.bundleDependencies.addAll([apiDep, slf4j])
+    props.contentDependencies.addAll([apiDep, slf4j, wcmTaglib, slingTaglib])
+} else if (props.aemVersion == "5.6.1") {
+    def slf4j = dependency("org.slf4j", "slf4j-api", "1.6.4")
+    def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
+    def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.1.8")
+
+    props.rootDependencies.addAll([slf4j, wcmTaglib, slingTaglib])
+    props.bundleDependencies.addAll([slf4j])
+    props.contentDependencies.addAll([slf4j, wcmTaglib, slingTaglib])
 }
 
 props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
