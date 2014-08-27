@@ -61,7 +61,7 @@ def dependency(groupId, artifactId, version, type = "jar", scope = "provided") {
 def props = [:]
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "1.7.2"
+def ACS_AEM_COMMONS_VERSION = "1.7.4"
 def AEM_API_VERSION = "6.0.0.1"
 
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
