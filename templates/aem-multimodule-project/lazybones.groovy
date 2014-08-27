@@ -112,10 +112,15 @@ if (props.aemVersion == "6.0") {
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.6.4", "jar", "test")
     def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
     def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.1.8")
+    def slingApi = dependency("org.apache.sling", "org.apache.sling.api", "2.4.3-R1488084")
+    def cqCommons = dependency("com.day.cq", "cq-commons", "5.6.4")
+    def wcmCommons = dependency("com.day.cq.wcm", "cq-wcm-commons", "5.6.4")
+    def wcmApi = dependency("com.day.cq.wcm", "cq-wcm-api", "5.6.6")
+    def xssApi = dependency("com.adobe.granite", "com.adobe.granite.xssprotection", "5.5.24")
 
-    props.rootDependencies.addAll([slf4j, wcmTaglib, slingTaglib, slf4jSimple])
-    props.bundleDependencies.addAll([slf4j, slf4jSimple])
-    props.contentDependencies.addAll([slf4j, wcmTaglib, slingTaglib])
+    props.rootDependencies.addAll([slf4j, wcmTaglib, slingTaglib, slf4jSimple, slingApi, cqCommons, wcmCommons, wcmApi, xssApi])
+    props.bundleDependencies.addAll([slf4j, slf4jSimple, slingApi, cqCommons, wcmCommons, wcmApi, xssApi])
+    props.contentDependencies.addAll([slf4j, slingApi, cqCommons, wcmCommons, wcmApi, xssApi, wcmTaglib, slingTaglib])
 }
 
 props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
