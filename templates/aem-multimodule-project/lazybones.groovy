@@ -20,6 +20,10 @@
 import uk.co.cacoethes.util.NameType
 import org.apache.commons.io.FileUtils
 
+// Helper Functions
+/**
+ * Convert a String value to a Groovy truthy or falsy (blank) value.
+ */
 def toBoolean(String val) {
     val = val.toLowerCase()
     if (val.startsWith("n") || val.equals("false")) {
@@ -29,6 +33,9 @@ def toBoolean(String val) {
     }
 }
 
+/**
+ * Ask the user a question expecting a yes/no/true/false response.
+ */
 def askBoolean(String message, String defaultValue, String propertyName) {
     String val = ask(message, defaultValue, propertyName)
     val = toBoolean(val)
@@ -36,11 +43,18 @@ def askBoolean(String message, String defaultValue, String propertyName) {
     return val
 }
 
+
+/**
+ * Ask the user a question expecting a yes/no/true/false response.
+ */
 def askBoolean(String message, String defaultValue) {
     String val = ask(message, defaultValue)
     return toBoolean(val)
 }
 
+/**
+ * Ask the user a question expecting one of a set list of options.
+ */
 def askFromList(String message, String defaultValue, String propertyName, options) {
     String fullMessage = "${message} Choices are ${options}: "
     String val = ""
@@ -50,32 +64,27 @@ def askFromList(String message, String defaultValue, String propertyName, option
     return val
 }
 
+/**
+ * Write a String to a file with the given name in the given directory
+ */
 def writeToFile(File dir, String fileName, String content) {
     FileUtils.write(new File(dir, fileName), content, fileEncoding)
 }
 
+/**
+ * Define a dependency map object.
+ */
 def dependency(groupId, artifactId, version, type = "jar", scope = "provided") {
     return [groupId:groupId, artifactId:artifactId, version:version, type:type, scope:scope]
 }
 
+// initialization
 def props = [:]
-
-// Constants
-def ACS_AEM_COMMONS_VERSION = "1.7.4"
-def AEM_API_VERSION = "6.0.0.1"
-
-props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
-props.artifactId = ask("Maven artifact ID for the generated reactor project [example-project]: ", "example-project", "artifactId")
-props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
-props.projectName = ask("Human readable project name [My AEM Project]:", "My AEM Project", "projectName")
-props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [6.0]", "6.0", "aemVersion", ["5.6.1", "6.0"])
-
-props.rootDependencies = [ ]
+props.rootDependencies = []
 props.bundleDependencies = []
 props.contentDependencies = []
 
-// common across 5.6.1 and 6.0
+// common dependencies
 def osgiCore = dependency("org.osgi", "org.osgi.core", "4.2.0")
 def osgiCompendium = dependency("org.osgi", "org.osgi.compendium", "4.2.0")
 def scrAnnotations = dependency("org.apache.felix", "org.apache.felix.scr.annotations", "1.9.8")
@@ -87,15 +96,27 @@ def commonsIo = dependency("commons-io", "commons-io", "2.4")
 def jstl = dependency("com.day.commons", "day-commons-jstl", "1.1.4")
 def jsp = dependency("javax.servlet.jsp", "jsp-api", "2.1")
 def jcr = dependency("javax.jcr", "jcr", "2.0")
-
-props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jstl, jsp, jcr])
-props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jsp, jcr])
-props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
-
 def junit = dependency("junit", "junit", "4.11", "jar", "test")
 def junitAddons = dependency("junit-addons", "junit-addons", "1.4", "jar", "test")
-props.rootDependencies.addAll([junit, junitAddons])
-props.bundleDependencies.addAll([junit, junitAddons])
+
+// core dependencies which span 5.6.1 and 6.0
+props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jstl, jsp, jcr, junit, junitAddons])
+props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jsp, jcr, junit, junitAddons])
+props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
+
+// Constants
+def ACS_AEM_COMMONS_VERSION = "1.7.4"
+def AEM_API_VERSION = "6.0.0.1"
+
+// Core Maven Information
+props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
+props.artifactId = ask("Maven artifact ID for the generated reactor project [example-project]: ", "example-project", "artifactId")
+props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
+props.contentArtifactId = ask("Maven artifact ID for the generated content package project [${props.artifactId}-content]: ", "${props.artifactId}-content" as String, "contentArtifactId")
+props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
+props.projectName = ask("Human readable project name [My AEM Project]:", "My AEM Project", "projectName")
+props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
+props.aemVersion = askFromList("Target AEM version [6.0]", "6.0", "aemVersion", ["5.6.1", "6.0"])
 
 if (props.aemVersion == "6.0") {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM_API_VERSION)
@@ -123,9 +144,7 @@ if (props.aemVersion == "6.0") {
     props.contentDependencies.addAll([slf4j, slingApi, cqCommons, wcmCommons, wcmApi, xssApi, wcmTaglib, slingTaglib])
 }
 
-props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
-props.contentArtifactId = ask("Maven artifact ID for the generated content package project [${props.artifactId}-content]: ", "${props.artifactId}-content" as String, "contentArtifactId")
-
+// Folder Names
 def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL, to: NameType.HYPHENATED).toLowerCase()
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
 props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
@@ -136,9 +155,11 @@ if (props.createDesign) {
     props.enableDhlm = ''
 }
 
+// Client Libraries
 props.createMainClientLib = askBoolean("Do you want to create 'main' client library (at /etc/clientlibs/${props.appsFolderName}/main having the category ${props.appsFolderName}.main)? [yes]: ", "yes", "createMainClientLib")
 props.createDependenciesClientLib = askBoolean("Do you want to create 'dependencies' client library (at /etc/clientlibs/${props.appsFolderName}/dependencies having the category ${props.appsFolderName}.dependencies)? [yes]: ", "yes", "createDependenciesClientLib")
 
+// Code Quality
 props.enableCodeQuality = askBoolean("Include ACS standard code quality settings (PMD, Findbugs, Checkstyle, JSLint, jacoco)? [yes]: ", "yes", "enableCodeQuality")
 if (props.enableCodeQuality) {
     def jsr305 = dependency("com.google.code.findbugs", "jsr305", "3.0.0")
@@ -147,6 +168,19 @@ if (props.enableCodeQuality) {
     props.bundleDependencies.add(jsr305)
 }
 
+// Configurations
+def createEnvRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories for each environment? [yes]: ", "yes", "createRunModeConfigFolders")
+def envNames = []
+def createAuthorAndPublishPerEnv = ''
+if (createEnvRunModeConfigFolders) {
+    envNames = ask("What are the environment names (comma-delimited list)? [localdev,dev,qa,stage,prod]: ", "localdev,dev,qa,stage,prod", "envNames").split(/,/)
+    for (int i = 0; i < envNames.length; i++) {
+        envNames[i] = envNames[i].trim()
+    }
+    createAuthorAndPublishPerEnv = askBoolean("Create author and publish runmode directories per environment? [yes]: ", "yes", "createAuthorAndPublishPerEnv")
+}
+
+// ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
 if (props.includeAcsAemCommons) {
     def bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION)
@@ -183,17 +217,6 @@ if (props.includeAcsAemCommons) {
     }
 
     props.enableVersionedClientLibs = askBoolean("Do you want to enable the ACS AEM Commons Versioned Clientlib Rewriter? [yes]: ", "yes", "enableVersionedClientLibs")
-}
-
-def createEnvRunModeConfigFolders = askBoolean("Do you want to create run-mode config directories for each environment? [yes]: ", "yes", "createRunModeConfigFolders")
-def envNames = []
-def createAuthorAndPublishPerEnv = ''
-if (createEnvRunModeConfigFolders) {
-    envNames = ask("What are the environment names (comma-delimited list)? [localdev,dev,qa,stage,prod]: ", "localdev,dev,qa,stage,prod", "envNames").split(/,/)
-    for (int i = 0; i < envNames.length; i++) {
-        envNames[i] = envNames[i].trim()
-    }
-    createAuthorAndPublishPerEnv = askBoolean("Create author and publish runmode directories per environment? [yes]: ", "yes", "createAuthorAndPublishPerEnv")
 }
 
 processTemplates "README.md", props
