@@ -186,7 +186,10 @@ if (createEnvRunModeConfigFolders) {
 def defaultReconfigureRootMapping = props.aemVersion == VERSION_561 ? "yes" : "no"
 props.reconfigureRootMapping = askBoolean("Do you want to set the default root mapping to /welcome (Classic UI)? [${defaultReconfigureRootMapping}]: ", defaultReconfigureRootMapping, "reconfigureRootMapping")
 
-
+props.enableClassicAuthoringAsDefault = ''
+if (aemVersion == VERSION_60) {
+    props.enableClassicAuthoringAsDefault = askBoolean("Do you want to set the default authoring UI to Classic UI? [yes]: ", "yes", )
+}
 
 // ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
@@ -418,9 +421,17 @@ if (props.enableDesignReferenceProvider) {
 }
 
 if (props.enableVersionedClientLibs) {
-    def rewriterDir = new File(configDir, "rewriter/default")
+    def rewriterDir = new File(configDir, "rewriter")
     rewriterDir.mkdirs()
     writeToFile(rewriterDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="sling:Folder"/>
+""");
+
+    def defaultDir = new File(rewriterDir, "default")
+    defaultDir.mkdir()
+    writeToFile(defaultDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="nt:unstructured"
@@ -451,5 +462,13 @@ if (props.reconfigureRootMapping) {
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="sling:OsgiConfig"
     rootmapping.target="/welcome"/>
+""");
+}
+
+if (aemVersion == VERSION_60 && props.enableClassicAuthoringAsDefault) {
+    writeToFile(configDir, "com.day.cq.wcm.core.impl.AuthoringUIModeServiceImpl.xml", """\
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"
+    authoringUIModeService.default="CLASSIC"/>
 """);
 }
