@@ -108,6 +108,9 @@ props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsL
 def ACS_AEM_COMMONS_VERSION = "1.7.4"
 def AEM_API_VERSION = "6.0.0.1"
 
+def VERSION_561 = "5.6.1"
+def VERSION_60 = "6.0"
+
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
 props.artifactId = ask("Maven artifact ID for the generated reactor project [example-project]: ", "example-project", "artifactId")
@@ -116,9 +119,9 @@ props.contentArtifactId = ask("Maven artifact ID for the generated content packa
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]:", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [6.0]", "6.0", "aemVersion", ["5.6.1", "6.0"])
+props.aemVersion = askFromList("Target AEM version [${VERSION_60}]", VERSION_60, "aemVersion", [VERSION_561, VERSION_60])
 
-if (props.aemVersion == "6.0") {
+if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM_API_VERSION)
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
@@ -179,6 +182,11 @@ if (createEnvRunModeConfigFolders) {
     }
     createAuthorAndPublishPerEnv = askBoolean("Create author and publish runmode directories per environment? [yes]: ", "yes", "createAuthorAndPublishPerEnv")
 }
+
+def defaultReconfigureRootMapping = props.aemVersion == VERSION_561 ? "yes" : "no"
+props.reconfigureRootMapping = askBoolean("Do you want to set the default root mapping to /welcome (Classic UI)? [${defaultReconfigureRootMapping}]: ", defaultReconfigureRootMapping, "reconfigureRootMapping")
+
+
 
 // ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
@@ -436,4 +444,12 @@ if (props.enableVersionedClientLibs) {
         includeTags="[A,/A,IMG,AREA,FORM,BASE,LINK,SCRIPT,BODY,/BODY]"/>
 </jcr:root>
 """)
+}
+
+if (props.reconfigureRootMapping) {
+    writeToFile(configDir, "com.day.cq.commons.servlets.RootMappingServlet.xml", """\
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"
+    rootmapping.target="/welcome"/>
+""");
 }
