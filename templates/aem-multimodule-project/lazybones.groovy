@@ -187,7 +187,7 @@ def defaultReconfigureRootMapping = props.aemVersion == VERSION_561 ? "yes" : "n
 props.reconfigureRootMapping = askBoolean("Do you want to set the default root mapping to /welcome (Classic UI)? [${defaultReconfigureRootMapping}]: ", defaultReconfigureRootMapping, "reconfigureRootMapping")
 
 props.enableClassicAuthoringAsDefault = ''
-if (aemVersion == VERSION_60) {
+if (props.aemVersion == VERSION_60) {
     props.enableClassicAuthoringAsDefault = askBoolean("Do you want to set the default authoring UI to Classic UI? [yes]: ", "yes", )
 }
 
@@ -465,7 +465,7 @@ if (props.reconfigureRootMapping) {
 """);
 }
 
-if (aemVersion == VERSION_60 && props.enableClassicAuthoringAsDefault) {
+if (props.aemVersion == VERSION_60 && props.enableClassicAuthoringAsDefault) {
     writeToFile(configDir, "com.day.cq.wcm.core.impl.AuthoringUIModeServiceImpl.xml", """\
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="sling:OsgiConfig"
