@@ -117,9 +117,9 @@ props.artifactId = ask("Maven artifact ID for the generated reactor project [exa
 props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
 props.contentArtifactId = ask("Maven artifact ID for the generated content package project [${props.artifactId}-content]: ", "${props.artifactId}-content" as String, "contentArtifactId")
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
-props.projectName = ask("Human readable project name [My AEM Project]:", "My AEM Project", "projectName")
+props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_60}]", VERSION_60, "aemVersion", [VERSION_561, VERSION_60])
+props.aemVersion = askFromList("Target AEM version [${VERSION_60}]: ", VERSION_60, "aemVersion", [VERSION_561, VERSION_60])
 
 if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM_API_VERSION)
