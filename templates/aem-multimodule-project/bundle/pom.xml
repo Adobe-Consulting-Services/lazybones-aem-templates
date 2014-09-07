@@ -52,6 +52,11 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${groupId}.${artifactId}</Bundle-SymbolicName>
+<% if (usingSlingModels && slingModelsPackage) { %>
+                        <Sling-Model-Packages>
+                          ${slingModelsPackage}
+                        </Sling-Model-Packages>
+<% } %>
                     </instructions>
                 </configuration>
             </plugin>

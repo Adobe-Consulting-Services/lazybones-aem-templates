@@ -230,6 +230,19 @@ if (props.includeAcsAemCommons) {
     props.enableVersionedClientLibs = askBoolean("Do you want to enable the ACS AEM Commons Versioned Clientlib Rewriter? [yes]: ", "yes", "enableVersionedClientLibs")
 }
 
+props.usingSlingModels = askBoolean("Will you be using Sling Models? [yes]: ", "yes", "usingSlingModels")
+if (props.usingSlingModels) {
+    def injectDep = dependency("javax.inject", "javax.inject", "1")
+    props.rootDependencies.add(injectDep)
+    props.bundleDependencies.add(injectDep)
+    if (props.aemVersion == VERSION_561) {
+        def modelsApiDependency = dependency("org.apache.sling", "org.apache.sling.models.api", "1.1.0")
+        props.rootDependencies.add(modelsApiDependency)
+        props.bundleDependencies.add(modelsApiDependency)
+    }
+    props.slingModelsPackage = ask("What package will contain your Sling Models?: ", "", "slingModelsPackage")
+}
+
 processTemplates "README.md", props
 processTemplates "**/pom.xml", props
 processTemplates "content/src/main/content/META-INF/vault/properties.xml", props
