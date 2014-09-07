@@ -88,6 +88,7 @@ props.contentDependencies = []
 def osgiCore = dependency("org.osgi", "org.osgi.core", "4.2.0")
 def osgiCompendium = dependency("org.osgi", "org.osgi.compendium", "4.2.0")
 def scrAnnotations = dependency("org.apache.felix", "org.apache.felix.scr.annotations", "1.9.8")
+def bndAnnotations = dependency("biz.aQute.bnd", "annotation", "2.3.0")
 def servletApi = dependency("javax.servlet", "servlet-api", "2.5")
 def commonsLang3 = dependency("org.apache.commons", "commons-lang3", "3.0.1")
 def commonsLang2 = dependency("commons-lang", "commons-lang", "2.5")
@@ -100,8 +101,8 @@ def junit = dependency("junit", "junit", "4.11", "jar", "test")
 def junitAddons = dependency("junit-addons", "junit-addons", "1.4", "jar", "test")
 
 // core dependencies which span 5.6.1 and 6.0
-props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jstl, jsp, jcr, junit, junitAddons])
-props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jsp, jcr, junit, junitAddons])
+props.rootDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, bndAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jstl, jsp, jcr, junit, junitAddons])
+props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, bndAnnotations, servletApi, commonsLang3, commonsLang2, commonsCodec, commonsIo, jsp, jcr, junit, junitAddons])
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
 
 // Constants
