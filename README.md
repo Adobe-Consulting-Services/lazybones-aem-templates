@@ -71,6 +71,8 @@ Below are all of the options available in the current version. To specify an opt
 | Create Environment-Specific Config Folders?               | yes                                | createRunModeConfigFolders     |
 | Environment Names                                         | localdev,dev,qa,stage,prod         | envNames                       |
 | Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
+| Using Sling Models?                                       | yes                                | usingSlingModels               |
+| Sling Models Package                                      | ''                                 | slingModelsPackage             |
 
 # Links to ACS AEM Commons Features
 
