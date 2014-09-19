@@ -244,6 +244,11 @@ if (props.usingSlingModels) {
     props.slingModelsPackage = ask("What package will contain your Sling Models?: ", "", "slingModelsPackage")
 }
 
+props.purgeDamWorkflows = askBoolean("Would you like automatic purging of the DAM workflows? [yes]: ", "yes", "purgeDamWorkflows");
+if (props.purgeDamWorkflows) {
+    props.purgeDamWorkflowRetention = ask("How many days should the DAM workflows be retained [7]: ", "7", "purgeDamWorkflowRetention")
+}
+
 processTemplates "README.md", props
 processTemplates "**/pom.xml", props
 processTemplates "content/src/main/content/META-INF/vault/properties.xml", props
@@ -485,4 +490,29 @@ if (props.aemVersion == VERSION_60 && props.enableClassicAuthoringAsDefault) {
     jcr:primaryType="sling:OsgiConfig"
     authoringUIModeService.default="CLASSIC"/>
 """);
+}
+
+if (props.purgeDamWorkflows) {
+    if (props.aemVersion == VERSION_561) {
+        writeToFile(configDir, "com.adobe.granite.workflow.purge.Scheduler-dam.xml", """\
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"
+    scheduledpurge.cron="0 0 2 ? * SAT *"
+    scheduledpurge.daysold="${props.purgeDamWorkflowRetention}"
+    scheduledpurge.modelIds="[/etc/workflow/models/dam/update_asset/jcr:content/model,/etc/workflow/models/dam-xmp-writeback/jcr:content/model]"
+    scheduledpurge.name="DAM Workflows"
+    scheduledpurge.workflowStatus="COMPLETED"
+/>
+""");
+    } else {
+        writeToFile(configDir, "com.adobe.granite.workflow.purge.Scheduler-dam.xml", """\
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OsgiConfig"
+    scheduledpurge.daysold="${props.purgeDamWorkflowRetention}"
+    scheduledpurge.modelIds="[/etc/workflow/models/dam/update_asset/jcr:content/model,/etc/workflow/models/dam-xmp-writeback/jcr:content/model]"
+    scheduledpurge.name="DAM Workflows"
+    scheduledpurge.workflowStatus="COMPLETED"
+/>
+""");
+    }
 }
