@@ -15,15 +15,6 @@ In order to use this project's templates, you must first have lazybones installe
     
 You can also download the distribution package from [BinTray](https://bintray.com/pledbrook/lazybones-templates/lazybones), unzip it, and add it to your PATH.
 
-# Configuring the Bintray Repository
-
-As these templates aren't (yet) in the default Lazybones template repository, you need to manually configure the ACS Lazybones template repository. To do this, create a file named `config.groovy` in `~/.lazybones` (creating this folder if necessary) with this content:
-
-    bintrayRepositories = [
-          "acs/lazybones",
-          "pledbrook/lazybones-templates"
-    ]
-
 # Using the Multimodule Template
 
 Once you've done this configuration, you can run Lazybones:
