@@ -70,7 +70,7 @@
                 <configuration>
                     <sourceJsFolder>src/main/content/jcr_root</sourceJsFolder>
                     <failOnIssues>true</failOnIssues>
-                    <predefinedVars>jQuery,window,\$,use,currentPage</predefinedVars>
+                    <predefinedVars>jQuery,window,\$,use,properties,pageProperties,inheritedPageProperties,component,componentContext,currentDesign,currentNode,currentPage,currentSession,currentStyle,designer,editContext,log,out,pageManager,reader,request,resource,resourceDesign,resourcePage,response,sling,slyWcmHelper,wcmmode,xssAPI</predefinedVars>
                     <excludes>
                         <exclude>**/extensions/**/*.js</exclude>
                         <exclude>**/vendor/**/*.js</exclude>
