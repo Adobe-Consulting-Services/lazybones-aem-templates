@@ -106,8 +106,8 @@ props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, bndAn
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "1.9.2"
 def AEM_API_VERSION = "6.0.0.1"
+def ACS_AEM_COMMONS_VERSION = "1.9.6"
 
 def VERSION_561 = "5.6.1"
 def VERSION_60 = "6.0"
