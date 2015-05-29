@@ -23,7 +23,7 @@
         <dependency>
             <groupId>${groupId}</groupId>
             <artifactId>${bundleArtifactId}</artifactId>
-            <version>\${version}</version>
+            <version>\${project.version}</version>
         </dependency><%
 %><% for (dependency in contentDependencies) { %>
         <dependency>
@@ -31,6 +31,9 @@
             <artifactId>${dependency.artifactId}</artifactId><%
 %><% if (dependency.type != "jar") { %>
             <type>${dependency.type}</type><%
+%><% } 
+     if (dependency.classifier) { %>
+            <classifier>${dependency.classifier}</classifier><%
 %><% } %>
         </dependency><%
 %><% } %>

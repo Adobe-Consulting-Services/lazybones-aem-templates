@@ -74,8 +74,8 @@ def writeToFile(File dir, String fileName, String content) {
 /**
  * Define a dependency map object.
  */
-def dependency(groupId, artifactId, version, type = "jar", scope = "provided") {
-    return [groupId:groupId, artifactId:artifactId, version:version, type:type, scope:scope]
+def dependency(groupId, artifactId, version, type = "jar", scope = "provided", classifier = "") {
+    return [groupId:groupId, artifactId:artifactId, version:version, type:type, scope:scope, classifier:classifier]
 }
 
 // initialization
@@ -106,13 +106,13 @@ props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, bndAn
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "1.9.6"
+def ACS_AEM_COMMONS_VERSION = "1.10.2"
 def AEM60_API_VERSION = "6.0.0.1"
-def AEM61_API_VERSION = "6.1.0-beta3"
+def AEM61_API_VERSION = "6.1.0"
 
 def VERSION_561 = "5.6.1"
 def VERSION_60 = "6.0"
-def VERSION_61b3 = "6.1b3"
+def VERSION_61 = "6.1"
 
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
@@ -122,7 +122,7 @@ props.contentArtifactId = ask("Maven artifact ID for the generated content packa
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_60}]: ", VERSION_60, "aemVersion", [VERSION_561, VERSION_60, VERSION_61b3])
+props.aemVersion = askFromList("Target AEM version [${VERSION_60}]: ", VERSION_60, "aemVersion", [VERSION_561, VERSION_60, VERSION_61])
 
 if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM60_API_VERSION)
@@ -133,17 +133,17 @@ if (props.aemVersion == VERSION_60) {
 
     props.rootDependencies.addAll([apiDep, slf4j, slf4jSimple, wcmTaglib, slingTaglib])
     props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
-    props.contentDependencies.addAll([apiDep, slf4j, slf4jSimple, wcmTaglib, slingTaglib])
-} else if (props.aemVersion == VERSION_61b3) {
-    def apiDep = dependency("com.adobe.aem", "aem-api", AEM61_API_VERSION)
+    props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
+} else if (props.aemVersion == VERSION_61) {
+    def apiDep = dependency("com.day.cq", "cq-quickstart", AEM61_API_VERSION, "jar", "provided", "apis")
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
     def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
     def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.2.4")
 
-    props.rootDependencies.addAll([apiDep, slf4j, slf4jSimple, wcmTaglib, slingTaglib])
+    props.rootDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
     props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
-    props.contentDependencies.addAll([apiDep, slf4j, slf4jSimple, wcmTaglib, slingTaglib])
+    props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
 } else if (props.aemVersion == VERSION_561) {
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.6.4")
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.6.4", "jar", "test")

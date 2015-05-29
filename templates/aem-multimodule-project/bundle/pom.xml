@@ -23,7 +23,10 @@
 %><% for (dependency in bundleDependencies) { %>
         <dependency>
             <groupId>${dependency.groupId}</groupId>
-            <artifactId>${dependency.artifactId}</artifactId>
+            <artifactId>${dependency.artifactId}</artifactId><%
+%><% if (dependency.classifier) { %>
+            <classifier>${dependency.classifier}</classifier><%
+%><% } %>
         </dependency><%
 %><% } %>
     </dependencies>

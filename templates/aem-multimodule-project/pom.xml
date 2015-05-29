@@ -44,6 +44,9 @@
                 <scope>${dependency.scope}</scope><%
 %><% if (dependency.type != "jar") { %>
                 <type>${dependency.type}</type><%
+%><% }
+     if (dependency.classifier) { %>
+                <classifier>${dependency.classifier}</classifier><%
 %><% } %>
             </dependency><%
 %><% } %>
