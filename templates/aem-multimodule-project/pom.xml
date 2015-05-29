@@ -115,11 +115,6 @@
                     <version>2.17</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.sling</groupId>
                     <artifactId>maven-sling-plugin</artifactId>
                     <version>2.1.0</version>
@@ -137,6 +132,15 @@
                         <failOnError>true</failOnError>
                         <username>\${crx.username}</username>
                         <password>\${crx.password}</password>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <configuration>
+                        <excludePackageNames>
+                            *.impl
+                        </excludePackageNames>
                     </configuration>
                 </plugin>
 <% if (enableCodeQuality) { %>
@@ -198,15 +202,6 @@
                             <version>0.0.1</version>
                         </dependency>
                     </dependencies>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9</version>
-                    <configuration>
-                        <excludePackageNames>
-                            *.impl
-                        </excludePackageNames>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
