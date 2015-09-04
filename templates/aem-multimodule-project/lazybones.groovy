@@ -106,7 +106,8 @@ props.bundleDependencies.addAll([osgiCore, osgiCompendium, scrAnnotations, bndAn
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, commonsLang2, jstl, jsp, jcr])
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "1.10.2"
+def ACS_AEM_COMMONS_VERSION_5 = "1.10.4"
+def ACS_AEM_COMMONS_VERSION_6 = "2.0.0"
 def AEM60_API_VERSION = "6.0.0.1"
 def AEM61_API_VERSION = "6.1.0"
 
@@ -207,8 +208,11 @@ if (props.aemVersion == VERSION_60) {
 // ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
 if (props.includeAcsAemCommons) {
-    def bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION)
-
+    if (props.aemVersion == VERSION_561) {
+        def bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_5)
+    } else {
+        def bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_6)
+    }
     props.rootDependencies.add(bundle)
     props.bundleDependencies.add(bundle)
     props.contentDependencies.add(bundle)
