@@ -208,10 +208,11 @@ if (props.aemVersion == VERSION_60) {
 // ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
 if (props.includeAcsAemCommons) {
+    def bundle;
     if (props.aemVersion == VERSION_561) {
-        def bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_5)
+        bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_5)
     } else {
-        def bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_6)
+        bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_6)
     }
     props.rootDependencies.add(bundle)
     props.bundleDependencies.add(bundle)
@@ -220,7 +221,12 @@ if (props.includeAcsAemCommons) {
     props.includeAcsAemCommonsSubPackage = askBoolean("Include ACS AEM Commons as a sub-package? [yes]: ", "yes", "includeAcsAemCommonsSubPackage")
 
     if (props.includeAcsAemCommonsSubPackage) {
-        def content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION, "content-package")
+        def content;
+        if (props.aemVersion == VERSION_561) {
+            content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_5, "content-package")
+        } else {
+            content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_6, "content-package")
+        }
         props.rootDependencies.add(content)
         props.contentDependencies.add(content)
     }
