@@ -107,13 +107,16 @@ props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsL
 
 // Constants
 def ACS_AEM_COMMONS_VERSION_5 = "1.10.4"
-def ACS_AEM_COMMONS_VERSION_6 = "2.0.0"
+def ACS_AEM_COMMONS_VERSION_6 = "2.4.2"
+def ACS_AEM_COMMONS_VERSION_62 = "3.0.2"
 def AEM60_API_VERSION = "6.0.0.1"
 def AEM61_API_VERSION = "6.1.0"
+def AEM62_API_VERSION = "6.2.0"
 
 def VERSION_561 = "5.6.1"
 def VERSION_60 = "6.0"
 def VERSION_61 = "6.1"
+def VERSION_62 = "6.2"
 
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
@@ -123,7 +126,7 @@ props.contentArtifactId = ask("Maven artifact ID for the generated content packa
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_60}]: ", VERSION_60, "aemVersion", [VERSION_561, VERSION_60, VERSION_61])
+props.aemVersion = askFromList("Target AEM version [${VERSION_61}]: ", VERSION_61, "aemVersion", [VERSION_561, VERSION_60, VERSION_61, VERSION_62])
 
 if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM60_API_VERSION)
@@ -137,6 +140,16 @@ if (props.aemVersion == VERSION_60) {
     props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
 } else if (props.aemVersion == VERSION_61) {
     def apiDep = dependency("com.adobe.aem", "uber-jar", AEM61_API_VERSION, "jar", "provided", "obfuscated-apis")
+    def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
+    def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
+    def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
+    def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.2.4")
+
+    props.rootDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
+    props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
+    props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
+} else if (props.aemVersion == VERSION_62) {
+    def apiDep = dependency("com.adobe.aem", "uber-jar", AEM62_API_VERSION, "jar", "provided", "obfuscated-apis")
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
     def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
@@ -211,6 +224,8 @@ if (props.includeAcsAemCommons) {
     def bundle;
     if (props.aemVersion == VERSION_561) {
         bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_5)
+    } else if (props.aemVersion == VERSION_62) {
+        bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_62)
     } else {
         bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_6)
     }
@@ -224,6 +239,8 @@ if (props.includeAcsAemCommons) {
         def content;
         if (props.aemVersion == VERSION_561) {
             content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_5, "content-package")
+        } else if (props.aemVersion == VERSION_62) {
+            content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_62, "content-package")
         } else {
             content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_6, "content-package")
         }
