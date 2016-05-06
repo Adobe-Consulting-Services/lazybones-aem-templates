@@ -37,7 +37,7 @@ Below are all of the options available in the current version. To specify an opt
 | Maven Artifact ID                                         | example-project                    | artifactId                     |
 | Maven Version                                             | 0.0.1-SNAPSHOT                     | version                        |
 | Project Name                                              | My AEM Project                     | projectName                    |
-| Target AEM Version                                        | 6.0                                | aemVersion                     |
+| Target AEM Version                                        | 6.1                                | aemVersion                     |
 | Bundle Artifact ID                                        | example-project-bundle             | bundleArtifactId               |
 | Content Package Artifact ID                               | example-project-content            | contentArtifactId              |
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
