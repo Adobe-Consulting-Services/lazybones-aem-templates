@@ -9,9 +9,9 @@ from [ACS AEM Commons](http://adobe-consulting-services.github.io/acs-aem-common
 
 # Installing Lazybones
 
-In order to use this project's templates, you must first have lazybones installed. The easiest way to do this is with [gvm](http://gvmtool.net/):
+In order to use this project's templates, you must first have lazybones installed. The easiest way to do this is with [sdkman](http://sdkman.io/):
 
-    gvm install lazybones
+    sdk install lazybones
     
 You can also download the distribution package from [BinTray](https://bintray.com/pledbrook/lazybones-templates/lazybones), unzip it, and add it to your PATH.
 
