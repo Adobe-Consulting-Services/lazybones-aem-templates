@@ -271,12 +271,18 @@ if (props.purgeDamWorkflows) {
     props.purgeDamWorkflowRetention = ask("How many days should the DAM workflows be retained [7]: ", "7", "purgeDamWorkflowRetention")
 }
 
+println "Processing README..."
 processTemplates "README.md", props
+
+println "Processing pom files..."
 processTemplates "**/pom.xml", props
+
+println "Processing package metafiles..."
 processTemplates "content/src/main/content/META-INF/vault/properties.xml", props
 processTemplates "content/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "content/src/main/content/META-INF/vault/definition/.content.xml", props
 
+println "Creating folders..."
 def componentsDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/components")
 componentsDir.mkdirs()
 new File(componentsDir, "content").mkdir()
@@ -310,6 +316,7 @@ installDir.mkdirs()
 writeToFile(installDir, ".vltignore", "*.jar")
 
 if (props.createDesign) {
+    println "Creating design..."
     def designDir = new File(projectDir, "content/src/main/content/jcr_root/etc/designs/${props.designFolderName}")
     designDir.mkdirs()
     if (props.enableDhlm) {
@@ -365,6 +372,8 @@ if (props.createDesign) {
 }
 
 if (props.createMainClientLib || props.createDependenciesClientLib) {
+    println "Creating clientlibs..."
+
     def clientLibFolder = new File(projectDir, "content/src/main/content/jcr_root/etc/clientlibs/${props.appsFolderName}")
     clientLibFolder.mkdirs()
     if (props.createMainClientLib) {
@@ -411,6 +420,7 @@ to be loaded in the head of your page in order to reduce extra HTTP calls.
 }
 
 if (props.enableErrorHandler) {
+    println "Enabling error handler..."
     def errorHandlerDir = new File(projectDir, "content/src/main/content/jcr_root/apps/sling/servlet/errorhandler")
     errorHandlerDir.mkdirs()
 
@@ -438,6 +448,7 @@ if (props.enableErrorHandler) {
 }
 
 if (props.enableDhlm) {
+    println "Enabling DHLM..."
     writeToFile(authorConfigDir, "com.adobe.acs.commons.util.impl.DelegatingServletFactoryImpl-DesignerClientLibsManager.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
@@ -456,14 +467,17 @@ def emptyConfig = """\
 """
 
 if (props.enablePagesReferenceProvider) {
+    println "Enabling Pages Reference Provider..."
     writeToFile(configDir, "com.adobe.acs.commons.wcm.impl.PagesReferenceProvider.xml", emptyConfig);
 }
 
 if (props.enableDesignReferenceProvider) {
+    println "Enabling Design Reference Provider..."
     writeToFile(configDir, "com.adobe.acs.commons.wcm.impl.DesignReferenceProvider.xml", emptyConfig);
 }
 
 if (props.enableVersionedClientLibs) {
+    println "Enabling Versioned Client Library Rewriter Rule..."
     def rewriterDir = new File(configDir, "rewriter")
     rewriterDir.mkdirs()
     writeToFile(rewriterDir, ".content.xml", """\
@@ -501,6 +515,7 @@ if (props.enableVersionedClientLibs) {
 }
 
 if (props.reconfigureRootMapping) {
+    println "Enabling Root Mapping..."
     writeToFile(configDir, "com.day.cq.commons.servlets.RootMappingServlet.xml", """\
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="sling:OsgiConfig"
@@ -509,6 +524,7 @@ if (props.reconfigureRootMapping) {
 }
 
 if (props.aemVersion == VERSION_60 && props.enableClassicAuthoringAsDefault) {
+    println "Enabling Classic UI Authoring..."
     writeToFile(configDir, "com.day.cq.wcm.core.impl.AuthoringUIModeServiceImpl.xml", """\
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="sling:OsgiConfig"
@@ -517,6 +533,7 @@ if (props.aemVersion == VERSION_60 && props.enableClassicAuthoringAsDefault) {
 }
 
 if (props.purgeDamWorkflows) {
+    println "Enabling DAM Workflow Purging..."
     if (props.aemVersion == VERSION_561) {
         writeToFile(configDir, "com.adobe.granite.workflow.purge.Scheduler-dam.xml", """\
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
