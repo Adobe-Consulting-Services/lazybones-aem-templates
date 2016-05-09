@@ -354,7 +354,7 @@
 <% } %>
     </profiles>
     <modules>
-        <module>bundle</module>
-        <module>content</module>
+        <module>${useNewNamingConvention ? 'core' : 'bundle'}</module>
+        <module>${useNewNamingConvention ? 'ui.apps' : 'content'}</module>
     </modules>
 </project>

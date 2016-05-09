@@ -127,6 +127,7 @@ props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
 props.aemVersion = askFromList("Target AEM version [${VERSION_61}]: ", VERSION_61, "aemVersion", [VERSION_561, VERSION_60, VERSION_61, VERSION_62])
+props.useNewNamingConvention = askBoolean("Use new module naming conventions (core, ui.apps vs. bundle, content) [yes]: ", "yes", "useNewNamingConvention")
 
 if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM60_API_VERSION)
@@ -573,4 +574,9 @@ if (props.purgeDamWorkflows) {
 />
 """);
     }
+}
+
+if (props.useNewNamingConvention) {
+    new File(projectDir, "bundle").renameTo(new File(projectDir, "core"))
+    new File(projectDir, "content").renameTo(new File(projectDir, "ui.apps"))
 }
