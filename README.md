@@ -40,6 +40,7 @@ Below are all of the options available in the current version. To specify an opt
 | Target AEM Version                                        | 6.1                                | aemVersion                     |
 | Bundle Artifact ID                                        | example-project-bundle             | bundleArtifactId               |
 | Content Package Artifact ID                               | example-project-content            | contentArtifactId              |
+| Use New Module Naming Convention (core, ui.apps)          | yes                                | useNewNamingConvention         |
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
 | Create a site design?                                     | yes                                | createDesign                   |
