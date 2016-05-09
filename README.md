@@ -38,9 +38,9 @@ Below are all of the options available in the current version. To specify an opt
 | Maven Version                                             | 0.0.1-SNAPSHOT                     | version                        |
 | Project Name                                              | My AEM Project                     | projectName                    |
 | Target AEM Version                                        | 6.1                                | aemVersion                     |
-| Bundle Artifact ID                                        | example-project-bundle             | bundleArtifactId               |
-| Content Package Artifact ID                               | example-project-content            | contentArtifactId              |
 | Use New Module Naming Convention (core, ui.apps)          | yes                                | useNewNamingConvention         |
+| Bundle Artifact ID                                        | example-project-bundle/example-project.core | bundleArtifactId               |
+| Content Package Artifact ID                               | example-project-content/example-project.ui.apps | contentArtifactId              |
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
 | Create a site design?                                     | yes                                | createDesign                   |

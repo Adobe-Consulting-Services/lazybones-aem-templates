@@ -121,13 +121,15 @@ def VERSION_62 = "6.2"
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
 props.artifactId = ask("Maven artifact ID for the generated reactor project [example-project]: ", "example-project", "artifactId")
-props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${props.artifactId}-bundle]: ", "${props.artifactId}-bundle" as String, "bundleArtifactId")
-props.contentArtifactId = ask("Maven artifact ID for the generated content package project [${props.artifactId}-content]: ", "${props.artifactId}-content" as String, "contentArtifactId")
+props.useNewNamingConvention = askBoolean("Use new module naming conventions (core, ui.apps vs. bundle, content) [yes]: ", "yes", "useNewNamingConvention")
+def defaultBundleArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.core' : '-bundle'}";
+props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${defaultBundleArtifactId}]: ", defaultBundleArtifactId as String, "bundleArtifactId")
+def defaultContentArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.ui.apps' : '-content'}";
+props.contentArtifactId = ask("Maven artifact ID for the generated content package project [${defaultContentArtifactId}]: ", defaultContentArtifactId as String, "contentArtifactId")
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
 props.aemVersion = askFromList("Target AEM version [${VERSION_61}]: ", VERSION_61, "aemVersion", [VERSION_561, VERSION_60, VERSION_61, VERSION_62])
-props.useNewNamingConvention = askBoolean("Use new module naming conventions (core, ui.apps vs. bundle, content) [yes]: ", "yes", "useNewNamingConvention")
 
 if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM60_API_VERSION)
