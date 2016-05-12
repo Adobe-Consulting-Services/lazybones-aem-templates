@@ -92,7 +92,7 @@
                     <embeddeds>
                         <embedded>
                             <groupId>${groupId}</groupId>
-                            <artifactId>${artifactId}-bundle</artifactId>
+                            <artifactId>${bundleArtifactId}</artifactId>
                             <target>/apps/${appsFolderName}/install</target>
                         </embedded>
                     </embeddeds>
