@@ -139,7 +139,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <failOnError>true</failOnError>
-                        <username>\${crx.username}</username>
+                        <userId>\${crx.username}</userId>
                         <password>\${crx.password}</password>
                     </configuration>
                 </plugin>
