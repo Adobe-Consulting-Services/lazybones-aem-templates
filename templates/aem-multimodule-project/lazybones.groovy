@@ -152,7 +152,7 @@ if (props.aemVersion == VERSION_60) {
     props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
     props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
 } else if (props.aemVersion == VERSION_62) {
-    def apiDep = dependency("com.adobe.aem", "uber-jar", AEM62_API_VERSION, "jar", "provided", "obfuscated-apis")
+    def apiDep = dependency("com.adobe.aem", "uber-jar", AEM62_API_VERSION, "jar", "provided", "apis")
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
     def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
