@@ -17,7 +17,7 @@ You can also download the distribution package from [BinTray](https://bintray.co
 
 # Using the Multimodule Template
 
-Once you've done this configuration, you can run Lazybones:
+Once Lazybones is installed, you can run Lazybones passing in the correct template name:
 
     lazybones create aem-multimodule-project <directory name>
 
