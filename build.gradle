@@ -16,6 +16,9 @@ apply plugin: "uk.co.cacoethes.lazybones-templates"
 lazybones {
     repositoryName = "acs/lazybones"
 
-    repositoryUsername = project.bintrayUsername
-    repositoryApiKey = project.bintrayApiKey
+    if (project.hasProperty("bintrayUsername") && project.hasProperty("bintrayApiKey")) {
+        repositoryUsername = project.bintrayUsername
+        repositoryApiKey = project.bintrayApiKey
+    }
+    
 }
