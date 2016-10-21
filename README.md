@@ -85,6 +85,7 @@ During development, it is necessary to do a local installation of the lazybones 
 
 * Add a gradle.properties file in the root directory that contains at least these properties:
 
+
     bintrayUsername=your_bintray_username
     bintrayApiKey=your_bintray_apikey
 
