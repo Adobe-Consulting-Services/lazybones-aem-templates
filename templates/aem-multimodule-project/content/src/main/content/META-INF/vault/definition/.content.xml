@@ -22,15 +22,22 @@
             root="/apps/sling/servlet/errorhandler"
             rules="[]"/>
 <% } %>
-<% if (createMainClientLib || createDependenciesClientLib) { %>
+<% if (createEditableTemplatesStructure) { %>
         <f2
+            jcr:primaryType="nt:unstructured"
+            mode="replace"
+            root="/conf/${appsFolderName}"
+            rules="[]"/>
+<% } %>
+<% if (createMainClientLib || createDependenciesClientLib) { %>
+        <f3
             jcr:primaryType="nt:unstructured"
             mode="replace"
             root="/etc/clientlibs/${appsFolderName}"
             rules="[]"/>
 <% } %>
 <% if (createDesign) { %>
-        <f3
+        <f4
             jcr:primaryType="nt:unstructured"
             mode="replace"
             root="/etc/designs/${designFolderName}"

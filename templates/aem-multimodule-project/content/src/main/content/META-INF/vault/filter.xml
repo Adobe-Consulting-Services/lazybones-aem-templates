@@ -4,6 +4,9 @@
 <% if (includeAcsAemCommons && enableErrorHandler) { %>
     <filter root="/apps/sling/servlet/errorhandler"/>
 <% } %>
+<% if (createEditableTemplatesStructure) { %>
+    <filter root="/conf/${appsFolderName}"/>
+<% } %>
 <% if (createMainClientLib || createDependenciesClientLib) { %>
     <filter root="/etc/clientlibs/${appsFolderName}"/>
 <% } %>
