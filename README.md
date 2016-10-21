@@ -83,15 +83,5 @@ Several of the prompts ask if you want to enable specific [ACS AEM Commons](http
 
 During development, it is necessary to do a local installation of the lazybones template(s) and then test creation against the installed version. To do this:
 
-* Add a gradle.properties file in the root directory that contains at least these properties:
-
-    bintrayUsername=your_bintray_username
-    bintrayApiKey=your_bintray_apikey
-
-For example
-
-    bintrayUsername=someone
-    bintrayApiKey=sfhakfh2948th9ghagh4gh30948g93hg
-
 * From the root directory, run the command `./gradlew installAllTemplates`
 * From a different directory, run the command `lazybones create aem-multimodule-project <SNAPSHOT VERSION> <NEW DIRECTORY NAME>`
