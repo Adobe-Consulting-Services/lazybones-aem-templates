@@ -17,7 +17,7 @@ You can also download the distribution package from [BinTray](https://bintray.co
 
 # Using the Multimodule Template
 
-Once you've done this configuration, you can run Lazybones:
+Once Lazybones is installed, you can run Lazybones passing in the correct template name:
 
     lazybones create aem-multimodule-project <directory name>
 
@@ -77,3 +77,10 @@ Several of the prompts ask if you want to enable specific [ACS AEM Commons](http
 * [ACS AEM Commons Design Reference Provider](http://adobe-consulting-services.github.io/acs-aem-commons/features/reference-providers.html)
 * [ACS AEM Commons Design Html Library Manager](http://adobe-consulting-services.github.io/acs-aem-commons/features/designer-clientlibsmanager.html)
 * [ACS AEM Commons Versioned Clientlibs Rewriter](http://adobe-consulting-services.github.io/acs-aem-commons/features/versioned-clientlibs.html)
+
+# Development
+
+During development, it is necessary to do a local installation of the lazybones template(s) and then test creation against the installed version. To do this:
+
+* From the root directory, run the command `./gradlew installAllTemplates`
+* From a different directory, run the command `lazybones create aem-multimodule-project <SNAPSHOT VERSION> <NEW DIRECTORY NAME>`
