@@ -218,7 +218,7 @@ props.reconfigureRootMapping = askBoolean("Do you want to set the default root m
 
 props.enableClassicAuthoringAsDefault = ''
 if (props.aemVersion == VERSION_60) {
-    props.enableClassicAuthoringAsDefault = askBoolean("Do you want to set the default authoring UI to Classic UI? [yes]: ", "yes", )
+    props.enableClassicAuthoringAsDefault = askBoolean("Do you want to set the default authoring UI to Classic UI? [yes]: ", "yes", "enableClassicAuthoringAsDefault")
 }
 
 // ACS AEM Commons
