@@ -185,7 +185,7 @@ props.contentFolderName = ask("Folder name under /content which will contain you
 // Create AEM 6.2 Editable Templates folders? 
 props.createEditableTemplatesStructure = ''
 if (props.aemVersion == VERSION_62) {
-	props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", );
+	props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
 }
 
 props.createDesign = askBoolean("Create a site design (under /etc/designs)? [yes]: ", "yes", "createDesign")
