@@ -186,6 +186,7 @@ props.contentFolderName = ask("Folder name under /content which will contain you
 props.createEditableTemplatesStructure = ''
 if (props.aemVersion == VERSION_62) {
 	props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
+    props.confFolderName = ask("Folder name under /conf for editable templates [${defaultFolderName}]: ", defaultFolderName, "confFolderName")
 }
 
 props.createDesign = askBoolean("Create a site design (under /etc/designs)? [yes]: ", "yes", "createDesign")
@@ -342,7 +343,6 @@ installDir.mkdirs()
 writeToFile(installDir, ".vltignore", "*.jar")
 
 // Creating AEM 6.2 Editable Templates folders 
-// if (props.aemVersion == VERSION_62 && props.createEditableTemplatesStructure) {
 if (props.createEditableTemplatesStructure) {
     println "Creating AEM 6.2 Editable Templates folders..."
 
@@ -355,7 +355,7 @@ if (props.createEditableTemplatesStructure) {
     jcr:primaryType="sling:Folder"/>
 """)
 
-	def confProjectDir = new File(confDir, "${props.appsFolderName}")
+	def confProjectDir = new File(confDir, "${props.confFolderName}")
 	confProjectDir.mkdirs()
     writeToFile(confProjectDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>

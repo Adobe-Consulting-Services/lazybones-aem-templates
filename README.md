@@ -44,6 +44,7 @@ Below are all of the options available in the current version. To specify an opt
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
 | Create AEM 6.2 Editable Templates folders?                | yes                                | createEditableTemplatesStructure |
+| Folder to create under `/conf`                           | my-aem-project                     | confFolderName                 |
 | Create a site design?                                     | yes                                | createDesign                   |
 | Design folder name                                        | my-aem-project                     | designFolderName               |
 | Create a main client library?                             | yes                                | createMainClientLib            |
