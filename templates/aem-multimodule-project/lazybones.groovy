@@ -122,6 +122,7 @@ def VERSION_62 = "6.2"
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
 props.artifactId = ask("Maven artifact ID for the generated reactor project [example-project]: ", "example-project", "artifactId")
 props.useNewNamingConvention = askBoolean("Use new module naming conventions (core, ui.apps vs. bundle, content) [yes]: ", "yes", "useNewNamingConvention")
+props.bundleInBundlesDirectory = askBoolean("Put the bundle module in a 'bundles' directory? [no]: ", "no", "bundleInBundlesDirectory")
 def defaultBundleArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.core' : '-bundle'}";
 props.bundleArtifactId = ask("Maven artifact ID for the generated bundle project [${defaultBundleArtifactId}]: ", defaultBundleArtifactId as String, "bundleArtifactId")
 def defaultContentArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.ui.apps' : '-content'}";
@@ -681,4 +682,14 @@ if (props.purgeDamWorkflows) {
 if (props.useNewNamingConvention) {
     new File(projectDir, "bundle").renameTo(new File(projectDir, "core"))
     new File(projectDir, "content").renameTo(new File(projectDir, "ui.apps"))
+}
+
+if (props.bundleInBundlesDirectory) {
+    def bundlesDir = new File(projectDir, "bundles")
+    bundlesDir.mkdir()
+    if (props.useNewNamingConvention) {
+        new File(projectDir, "core").renameTo(new File(bundlesDir, "core"))
+    } else {
+        new File(projectDir, "bundle").renameTo(new File(bundlesDir, "bundle"))
+    }
 }

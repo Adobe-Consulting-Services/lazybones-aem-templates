@@ -8,7 +8,9 @@
     <parent>
         <groupId>${groupId}</groupId>
         <artifactId>${artifactId}</artifactId>
-        <version>${version}</version>
+        <version>${version}</version><% if (bundleInBundlesDirectory) { %>
+        <relativePath>../../pom.xml</relativePath>
+<% } %>
     </parent>
 
     <!-- ====================================================================== -->
