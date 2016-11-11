@@ -107,8 +107,8 @@ props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsL
 
 // Constants
 def ACS_AEM_COMMONS_VERSION_5 = "1.10.4"
-def ACS_AEM_COMMONS_VERSION_6 = "2.7.0"
-def ACS_AEM_COMMONS_VERSION_62 = "3.3.0"
+def ACS_AEM_COMMONS_VERSION_6 = "2.8.0"
+def ACS_AEM_COMMONS_VERSION_62 = "3.4.0"
 def AEM60_API_VERSION = "6.0.0.1"
 def AEM61_API_VERSION = "6.1.0"
 def AEM62_API_VERSION = "6.2.0"
