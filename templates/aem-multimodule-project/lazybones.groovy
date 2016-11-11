@@ -185,7 +185,7 @@ props.contentFolderName = ask("Folder name under /content which will contain you
 // Create AEM 6.2 Editable Templates folders? 
 props.createEditableTemplatesStructure = ''
 if (props.aemVersion == VERSION_62) {
-	props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
+    props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
     props.confFolderName = ask("Folder name under /conf for editable templates [${defaultFolderName}]: ", defaultFolderName, "confFolderName")
 }
 
@@ -346,8 +346,8 @@ writeToFile(installDir, ".vltignore", "*.jar")
 if (props.createEditableTemplatesStructure) {
     println "Creating AEM 6.2 Editable Templates folders..."
 
-	def confDir = new File(projectDir, "content/src/main/content/jcr_root/conf")
-	confDir.mkdirs()
+    def confDir = new File(projectDir, "content/src/main/content/jcr_root/conf")
+    confDir.mkdirs()
     writeToFile(confDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
@@ -355,8 +355,8 @@ if (props.createEditableTemplatesStructure) {
     jcr:primaryType="sling:Folder"/>
 """)
 
-	def confProjectDir = new File(confDir, "${props.confFolderName}")
-	confProjectDir.mkdirs()
+    def confProjectDir = new File(confDir, "${props.confFolderName}")
+    confProjectDir.mkdirs()
     writeToFile(confProjectDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
@@ -364,16 +364,16 @@ if (props.createEditableTemplatesStructure) {
     jcr:title="${props.projectName}"/>
 """)
 
-	def confSettingsDir = new File(confProjectDir, "settings")
-	confSettingsDir.mkdirs()
+    def confSettingsDir = new File(confProjectDir, "settings")
+    confSettingsDir.mkdirs()
     writeToFile(confSettingsDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="sling:Folder"/>
 """)
 
-	def confWcmDir = new File(confSettingsDir, "wcm")
-	confWcmDir.mkdirs()
+    def confWcmDir = new File(confSettingsDir, "wcm")
+    confWcmDir.mkdirs()
     writeToFile(confWcmDir, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
@@ -410,18 +410,18 @@ if (props.createEditableTemplatesStructure) {
 </jcr:root>
 """;
 
-	def confTemplatesDir = new File(confWcmDir, "templates")
-	confTemplatesDir.mkdirs()
+    def confTemplatesDir = new File(confWcmDir, "templates")
+    confTemplatesDir.mkdirs()
     writeToFile(confTemplatesDir, ".content.xml", confCqPageContent)
     writeToFile(confTemplatesDir, "_rep_policy.xml", confRepPolicyTemplatesContent)
 
-	def confPoliciesDir = new File(confWcmDir, "policies")
-	confPoliciesDir.mkdirs()
+    def confPoliciesDir = new File(confWcmDir, "policies")
+    confPoliciesDir.mkdirs()
     writeToFile(confPoliciesDir, ".content.xml", confCqPageContent)
     writeToFile(confPoliciesDir, "_rep_policy.xml", confRepPolicyTemplatesContent)
 
-	def confTemplateTypesDir = new File(confWcmDir, "template-types")
-	confTemplateTypesDir.mkdirs()
+    def confTemplateTypesDir = new File(confWcmDir, "template-types")
+    confTemplateTypesDir.mkdirs()
     writeToFile(confTemplateTypesDir, ".content.xml", confCqPageContent)
     writeToFile(confTemplateTypesDir, "_rep_policy.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
