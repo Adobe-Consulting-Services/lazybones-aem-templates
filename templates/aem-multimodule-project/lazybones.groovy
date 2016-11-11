@@ -182,6 +182,13 @@ def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL,
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
 props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
 
+// Create AEM 6.2 Editable Templates folders? 
+props.createEditableTemplatesStructure = ''
+if (props.aemVersion == VERSION_62) {
+	props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
+    props.confFolderName = ask("Folder name under /conf for editable templates [${defaultFolderName}]: ", defaultFolderName, "confFolderName")
+}
+
 props.createDesign = askBoolean("Create a site design (under /etc/designs)? [yes]: ", "yes", "createDesign")
 if (props.createDesign) {
     props.designFolderName = ask("Folder name under /etc/designs which will contain your design settings [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "designFolderName")
@@ -334,6 +341,99 @@ if (createEnvRunModeConfigFolders) {
 def installDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}/install")
 installDir.mkdirs()
 writeToFile(installDir, ".vltignore", "*.jar")
+
+// Creating AEM 6.2 Editable Templates folders 
+if (props.createEditableTemplatesStructure) {
+    println "Creating AEM 6.2 Editable Templates folders..."
+
+	def confDir = new File(projectDir, "content/src/main/content/jcr_root/conf")
+	confDir.mkdirs()
+    writeToFile(confDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+    jcr:mixinTypes="[rep:AccessControllable]"
+    jcr:primaryType="sling:Folder"/>
+""")
+
+	def confProjectDir = new File(confDir, "${props.confFolderName}")
+	confProjectDir.mkdirs()
+    writeToFile(confProjectDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:Folder"
+    jcr:title="${props.projectName}"/>
+""")
+
+	def confSettingsDir = new File(confProjectDir, "settings")
+	confSettingsDir.mkdirs()
+    writeToFile(confSettingsDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:Folder"/>
+""")
+
+	def confWcmDir = new File(confSettingsDir, "wcm")
+	confWcmDir.mkdirs()
+    writeToFile(confWcmDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Page"/>
+""")
+
+    def confCqPageContent = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+    jcr:mixinTypes="[rep:AccessControllable]"
+    jcr:primaryType="cq:Page"/>
+""";
+
+    def confRepPolicyTemplatesContent = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:crx="http://www.day.com/crx/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+    jcr:primaryType="rep:ACL">
+    <allow
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="everyone"
+        rep:privileges="{Name}[jcr:read]"/>
+    <allow0
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="content-authors"
+        rep:privileges="{Name}[crx:replicate]"/>
+    <allow1
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="template-authors"
+        rep:privileges="{Name}[jcr:versionManagement,crx:replicate,rep:write,jcr:lockManagement]"/>
+    <allow2
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="version-manager-service"
+        rep:privileges="{Name}[jcr:versionManagement,rep:write]"/>
+</jcr:root>
+""";
+
+	def confTemplatesDir = new File(confWcmDir, "templates")
+	confTemplatesDir.mkdirs()
+    writeToFile(confTemplatesDir, ".content.xml", confCqPageContent)
+    writeToFile(confTemplatesDir, "_rep_policy.xml", confRepPolicyTemplatesContent)
+
+	def confPoliciesDir = new File(confWcmDir, "policies")
+	confPoliciesDir.mkdirs()
+    writeToFile(confPoliciesDir, ".content.xml", confCqPageContent)
+    writeToFile(confPoliciesDir, "_rep_policy.xml", confRepPolicyTemplatesContent)
+
+	def confTemplateTypesDir = new File(confWcmDir, "template-types")
+	confTemplateTypesDir.mkdirs()
+    writeToFile(confTemplateTypesDir, ".content.xml", confCqPageContent)
+    writeToFile(confTemplateTypesDir, "_rep_policy.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+    jcr:primaryType="rep:ACL">
+    <allow
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="template-authors"
+        rep:privileges="{Name}[jcr:read]"/>
+</jcr:root>
+""")
+}
 
 if (props.createDesign) {
     println "Creating design..."

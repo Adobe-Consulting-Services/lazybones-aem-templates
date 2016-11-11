@@ -22,12 +22,31 @@
             root="/apps/sling/servlet/errorhandler"
             rules="[]"/>
 <% } %>
-<% if (createMainClientLib || createDependenciesClientLib) { %>
+<% if (createEditableTemplatesStructure) { %>
         <f2
+            jcr:primaryType="nt:unstructured"
+            mode="merge"
+            root="/conf/${appsFolderName}"
+            rules="[]"/>
+<% } %>
+<% if (createMainClientLib || createDependenciesClientLib) { %>
+        <f3
             jcr:primaryType="nt:unstructured"
             mode="replace"
             root="/etc/clientlibs/${appsFolderName}"
             rules="[]"/>
 <% } %>
+<% if (createDesign) { %>
+        <f4
+            jcr:primaryType="nt:unstructured"
+            mode="replace"
+            root="/etc/designs/${designFolderName}"
+<%   if (includeAcsAemCommons && enableDhlm) { %>
+            rules="[include:/etc/designs/${designFolderName}/jcr:content,include:/etc/designs/${designFolderName}/jcr:content/clientlibs,include:/etc/designs/${designFolderName}/jcr:content/clientlibs/.*]"/>
+<%   } else { %>
+            rules="[include:/etc/designs/${designFolderName}/jcr:content]"/>
+<%   }
+   }
+%>
     </filter>
 </jcr:root>
