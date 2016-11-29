@@ -35,15 +35,16 @@ Below are all of the options available in the current version. To specify an opt
 |-----------------------------------------------------------|------------------------------------|--------------------------------|
 | Maven Group ID                                            | com.myco                           | groupId                        |
 | Maven Artifact ID                                         | example-project                    | artifactId                     |
-| Maven Version                                             | 0.0.1-SNAPSHOT                     | version                        |
-| Project Name                                              | My AEM Project                     | projectName                    |
-| Target AEM Version                                        | 6.1                                | aemVersion                     |
 | Use New Module Naming Convention (core, ui.apps)          | yes                                | useNewNamingConvention         |
 | Put Bundle in "bundles" sub-directory                     | no                                 | bundleInBundlesDirectory       |
 | Bundle Artifact ID                                        | example-project-bundle/example-project.core | bundleArtifactId               |
 | Content Package Artifact ID                               | example-project-content/example-project.ui.apps | contentArtifactId              |
-| Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
-| Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
+| Maven Version                                             | 0.0.1-SNAPSHOT                     | version                        |
+| Project Name                                              | My AEM Project                     | projectName                    |
+| Group name for Content Package                            | my-packages                        | packageGroup                   |
+| Target AEM Version                                        | 6.1                                | aemVersion                     |
+| Folder to create under `/apps`                           | my-aem-project                     | appsFolderName                 |
+| Folder to use under `/content`                           | my-aem-project                     | contentFolderName              |
 | Create AEM 6.2 Editable Templates folders?                | yes                                | createEditableTemplatesStructure |
 | Folder to create under `/conf`                           | my-aem-project                     | confFolderName                 |
 | Create a site design?                                     | yes                                | createDesign                   |
@@ -51,7 +52,10 @@ Below are all of the options available in the current version. To specify an opt
 | Create a main client library?                             | yes                                | createMainClientLib            |
 | Create a dependencies client library                      | yes                                | createDependenciesClientLib    |
 | Enable code quality checks?                               | yes                                | enableCodeQuality              |
-| Set root mapping to `/welcome` (Classic UI)?              | yes in 5.6.1, no in 6.0            | reconfigureRootMapping         |
+| Create Environment-Specific Config Folders?               | yes                                | createRunModeConfigFolders     |
+| Environment Names                                         | localdev,dev,qa,stage,prod         | envNames                       |
+| Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
+| Set root mapping to `/welcome` (Classic UI)?             | yes in 5.6.1, no in 6.0            | reconfigureRootMapping         |
 | Set Default Authoring UI to Classic? (6.0 only)           | yes                                | enableClassicAuthoringAsDefault |
 | Include ACS AEM Commons?                                  | yes                                | includeAcsAemCommons           |
 | Include ACS AEM Commons as a sub-package?                 | yes                                | includeAcsAemCommonsSubPackage |
@@ -63,9 +67,6 @@ Below are all of the options available in the current version. To specify an opt
 | Enable ACS AEM Commons Design Reference Provider?         | yes                                | enableDesignReferenceProvider  |
 | Enable ACS AEM Commons Design Html Library Manager?       | yes                                | enableDhlm                     |
 | Enable ACS AEM Commons Versioned Client Libraries?        | yes                                | enableVersionedClientLibs      |
-| Create Environment-Specific Config Folders?               | yes                                | createRunModeConfigFolders     |
-| Environment Names                                         | localdev,dev,qa,stage,prod         | envNames                       |
-| Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
 | Using Sling Models?                                       | yes                                | usingSlingModels               |
 | Sling Models Package                                      | ''                                 | slingModelsPackage             |
 | Purge DAM Workflows?                                      | yes                                | purgeDamWorkflows              |
