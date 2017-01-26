@@ -72,6 +72,16 @@ def writeToFile(File dir, String fileName, String content) {
 }
 
 /**
+ * Write a String to a file with the given name in the given subdirectory, creating if necessary
+ */
+def writeToFileInSubDir(File dir, String subDirName, String fileName, String content) {
+    def subDir = new File(dir, subDirName);
+    subDir.mkdir();
+    writeToFile(subDir, fileName, content);
+}
+
+
+/**
  * Define a dependency map object.
  */
 def dependency(groupId, artifactId, version, type = "jar", scope = "provided", classifier = "") {
@@ -128,6 +138,8 @@ def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL,
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
 props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
 
+props.createDefaultPageStructureComponent = askBoolean("Would you like to create a default page structure component? [yes]:", "yes", "createDefaultPageStructureComponent")
+
 // Create AEM 6.2 Editable Templates folders? 
 props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
 props.confFolderName = ask("Folder name under /conf for editable templates [${defaultFolderName}]: ", defaultFolderName, "confFolderName")
@@ -135,6 +147,12 @@ props.confFolderName = ask("Folder name under /conf for editable templates [${de
 props.createDesign = askBoolean("Create a site design (under /etc/designs)? [yes]: ", "yes", "createDesign")
 if (props.createDesign) {
     props.designFolderName = ask("Folder name under /etc/designs which will contain your design settings [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "designFolderName")
+}
+
+if (props.createDefaultPageStructureComponent && props.createEditableTemplatesStructure && props.createDesign) {
+    props.createSiteRoot = askBoolean("Create a site root? [yes]: ", "yes", "createSiteRoot")
+} else {
+    props.createSiteRoot = false
 }
 
 // Client Libraries
@@ -147,9 +165,9 @@ if (props.usingSlingModels) {
     def injectDep = dependency("javax.inject", "javax.inject", "1")
     props.rootDependencies.add(injectDep)
     props.bundleDependencies.add(injectDep)
-    props.slingModelsPackage = ask("What package will contain your Sling Models?: ", "", "slingModelsPackage")
+    def defaultSlingModelsPackage = props.groupId + ".models";
+    props.slingModelsPackage = ask("What package will contain your Sling Models?: [" + defaultSlingModelsPackage + "]", defaultSlingModelsPackage as String, "slingModelsPackage")
 }
-
 
 println "Processing README..."
 processTemplates "README.md", props
@@ -166,7 +184,28 @@ println "Creating folders..."
 def componentsDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/components")
 componentsDir.mkdirs()
 new File(componentsDir, "content").mkdir()
-new File(componentsDir, "page").mkdir()
+def structureDir = new File(componentsDir, "structure")
+structureDir.mkdir()
+
+if (props.createDefaultPageStructureComponent) {
+    def pageComponentDir = new File(structureDir, "page");
+    pageComponentDir.mkdir();
+    writeToFile(pageComponentDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Component"
+    jcr:title="${props.projectName} Page"
+    jcr:description="Page component with ${props.projectName} specific header and footer libs"
+    sling:resourceSuperType="core/wcm/components/page/v1/page"
+    componentGroup=".hidden"/>
+""")
+    if (props.createDependenciesClientLib) {
+        writeToFile(pageComponentDir, "customheaderlibs.html", """\
+<sly data-sly-use.clientLib="/libs/granite/sightly/templates/clientlib.html"
+     data-sly-call="\${clientlib.css @ categories='${props.appsFolderName}.dependencies'}"/>
+""")
+    }
+}
 
 def templatesDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/templates")
 templatesDir.mkdirs()
@@ -279,6 +318,108 @@ if (props.createEditableTemplatesStructure) {
 </jcr:root>
 """)
     }
+    def redirectPageTemplateTypeDir = new File(confTemplateTypesDir, "redirect-page");
+    redirectPageTemplateTypeDir.mkdir();
+    writeToFile(redirectPageTemplateTypeDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Template">
+    <jcr:content
+        jcr:description="Template for pages that redirect"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="${props.projectName} Redirect Page"
+        status="enabled"/>
+</jcr:root>
+""")
+    writeToFileInSubDir(redirectPageTemplateTypeDir, "initial", ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="cq:PageContent"
+        sling:redirect="{Boolean}true"
+        sling:redirectStatus="{Long}302"
+        sling:resourceType="foundation/components/redirect"/>
+</jcr:root>
+""")
+    writeToFileInSubDir(redirectPageTemplateTypeDir, "policies", ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="wcm/core/components/policies/mappings"/>
+</jcr:root>
+""")
+    writeToFileInSubDir(redirectPageTemplateTypeDir, "structure", ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="foundation/components/redirect"/>
+</jcr:root>
+""")
+
+    if (props.createDefaultPageStructureComponent) {
+        def emptyPageTemplateTypeDir = new File(confTemplateTypesDir, "empty-page");
+        emptyPageTemplateTypeDir.mkdir();
+        writeToFile(emptyPageTemplateTypeDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Template">
+    <jcr:content
+        jcr:description="Generic template for web pages"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="${props.projectName} Empty Page"
+        status="enabled"/>
+</jcr:root>
+""")
+        writeToFileInSubDir(emptyPageTemplateTypeDir, "initial", ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="${props.appsFolderName}/components/structure/page"/>
+</jcr:root>
+""")
+        writeToFileInSubDir(emptyPageTemplateTypeDir, "policies", ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="wcm/core/components/policies/mappings"/>
+</jcr:root>
+""")
+        writeToFileInSubDir(emptyPageTemplateTypeDir, "structure", ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:deviceGroups="[/etc/mobile/groups/responsive]"
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="${props.appsFolderName}/components/structure/page">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="wcm/foundation/components/responsivegrid"/>
+        <cq:responsive jcr:primaryType="nt:unstructured">
+            <breakpoints jcr:primaryType="nt:unstructured">
+                <phone
+                    jcr:primaryType="nt:unstructured"
+                    title="Smaller Screen"
+                    width="{Long}650"/>
+                <tablet
+                    jcr:primaryType="nt:unstructured"
+                    title="Tablet"
+                    width="{Long}1200"/>
+            </breakpoints>
+        </cq:responsive>
+    </jcr:content>
+</jcr:root>
+""")
+    }
 }
 
 if (props.createDesign) {
@@ -295,6 +436,29 @@ if (props.createDesign) {
         jcr:primaryType="cq:PageContent"
         jcr:title="${props.projectName}"
         sling:resourceType="wcm/core/components/designer" />
+</jcr:root>
+""")
+}
+
+if (props.createSiteRoot) {
+    println "Creating site root..."
+    def contentDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/content/${props.contentFolderName}")
+    contentDir.mkdirs()
+    writeToFile(contentDir, ".content.xml", """\
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:allowedTemplates="[/conf/${props.confFolderName}/settings/wcm/templates/.*]"
+        cq:designPath="/etc/designs/${props.designFolderName}"
+        cq:deviceGroups="[/etc/mobile/groups/responsive]"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="${props.projectName}"
+        sling:redirect="true"
+        sling:redirectStatus="{Long}302"
+        sling:resourceType="foundation/components/redirect"
+        redirectTarget="/content/${props.contentFolderName}/en">
+    </jcr:content>
 </jcr:root>
 """)
 }
@@ -325,6 +489,31 @@ In general, you should load the CSS in the head and the JS just before the end o
 """)
         writeToFile(mainClientLibFolder, "css.txt", """\
 #base=css
+grid.less
+""")
+        writeToFileInSubDir(mainClientLibFolder, "css", "grid.less", """\
+@import (once) "/etc/clientlibs/wcm/foundation/grid/grid_base.less";
+
+@max_col: 12; /* maximum amount of grid cells */
+
+/* default breakpoint */
+.aem-Grid {
+    .generate-grid(default, @max_col);
+}
+
+/* phone breakpoint */
+@media (max-width: 768px) {
+    .aem-Grid {
+        .generate-grid(phone, @max_col);
+    }
+}
+
+/* tablet breakpoint */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .aem-Grid {
+        .generate-grid(tablet, @max_col);
+    }
+}
 """)
     }
     if (props.createDependenciesClientLib) {
@@ -335,7 +524,7 @@ In general, you should load the CSS in the head and the JS just before the end o
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:ClientLibraryFolder"
     categories="[${props.appsFolderName}.dependencies]"
-    embed="[jquery,granite.utils,granite.jquery,cq.jquery,granite.shared,cq.shared,underscore]"/>
+    embed="[jquery,granite.utils,granite.jquery,cq.jquery,granite.shared,cq.shared,cq.foundation-main]"/>
 """)
         writeToFile(depClientLibFolder, "readme.txt", """\
 This client library should be used to embed dependencies. It is pre-stocked with a handful of

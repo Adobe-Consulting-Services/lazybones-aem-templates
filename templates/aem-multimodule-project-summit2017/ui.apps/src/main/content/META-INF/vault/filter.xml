@@ -12,4 +12,7 @@
         <include pattern="/etc/designs/${designFolderName}/jcr:content"/>
     </filter>
 <% } %>
+<% if (createSiteRoot) { %>
+    <filter root="/content/${contentFolderName}" mode="merge" />
+<% } %>
 </workspaceFilter>
