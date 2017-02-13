@@ -475,7 +475,8 @@ if (props.createMainClientLib || props.createDependenciesClientLib) {
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:ClientLibraryFolder"
-    categories="[${props.appsFolderName}.main]"/>
+    categories="[${props.appsFolderName}.main]"
+    embed="[core.wcm.components.image.v1]"/>
 """)
         writeToFile(mainClientLibFolder, "readme.txt", """\
 This client library should be used to store your site's JavaScript and CSS.
