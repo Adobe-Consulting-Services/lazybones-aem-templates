@@ -524,7 +524,7 @@ grid.less
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:ClientLibraryFolder"
     categories="[${props.appsFolderName}.dependencies]"
-    embed="[jquery,granite.utils,granite.jquery,cq.jquery,granite.shared,cq.shared,cq.foundation-main]"/>
+    embed="[jquery,granite.utils,granite.jquery,cq.jquery,cq.wcm.foundation,cq.wcm.foundation-main]"/>
 """)
         writeToFile(depClientLibFolder, "readme.txt", """\
 This client library should be used to embed dependencies. It is pre-stocked with a handful of
