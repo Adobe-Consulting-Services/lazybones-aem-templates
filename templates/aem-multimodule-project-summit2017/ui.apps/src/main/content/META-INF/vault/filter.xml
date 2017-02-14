@@ -9,6 +9,7 @@
 <% } %>
 <% if (createDesign) { %>
     <filter root="/etc/designs/${designFolderName}">
+        <include pattern="/etc/designs/${designFolderName}"/>
         <include pattern="/etc/designs/${designFolderName}/jcr:content"/>
     </filter>
 <% } %>
