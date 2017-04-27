@@ -107,16 +107,18 @@ props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsL
 
 // Constants
 def ACS_AEM_COMMONS_VERSION_5 = "1.10.4"
-def ACS_AEM_COMMONS_VERSION_6 = "2.8.0"
-def ACS_AEM_COMMONS_VERSION_62 = "3.4.0"
+def ACS_AEM_COMMONS_VERSION_6 = "2.11.0"
+def ACS_AEM_COMMONS_VERSION_62 = "3.8.4"
 def AEM60_API_VERSION = "6.0.0.1"
 def AEM61_API_VERSION = "6.1.0"
 def AEM62_API_VERSION = "6.2.0"
+def AEM63_API_VERSION = "6.3.0"
 
 def VERSION_561 = "5.6.1"
 def VERSION_60 = "6.0"
 def VERSION_61 = "6.1"
 def VERSION_62 = "6.2"
+def VERSION_63 = "6.3"
 
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
@@ -130,7 +132,7 @@ props.contentArtifactId = ask("Maven artifact ID for the generated content packa
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_61}]: ", VERSION_61, "aemVersion", [VERSION_561, VERSION_60, VERSION_61, VERSION_62])
+props.aemVersion = askFromList("Target AEM version [${VERSION_62}]: ", VERSION_62, "aemVersion", [VERSION_561, VERSION_60, VERSION_61, VERSION_62, VERSION_63])
 
 if (props.aemVersion == VERSION_60) {
     def apiDep = dependency("com.adobe.aem", "aem-api", AEM60_API_VERSION)
@@ -162,6 +164,16 @@ if (props.aemVersion == VERSION_60) {
     props.rootDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
     props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
     props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
+} else if (props.aemVersion == VERSION_63) {
+    def apiDep = dependency("com.adobe.aem", "uber-jar", AEM63_API_VERSION, "jar", "provided", "apis")
+    def slf4j = dependency("org.slf4j", "slf4j-api", "1.7.6")
+    def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.7.6", "jar", "test")
+    def wcmTaglib = dependency("com.day.cq.wcm", "cq-wcm-taglib", "5.6.4")
+    def slingTaglib = dependency("org.apache.sling", "org.apache.sling.scripting.jsp.taglib", "2.2.4")
+
+    props.rootDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
+    props.bundleDependencies.addAll([apiDep, slf4j, slf4jSimple])
+    props.contentDependencies.addAll([wcmTaglib, slingTaglib, apiDep, slf4j, slf4jSimple])
 } else if (props.aemVersion == VERSION_561) {
     def slf4j = dependency("org.slf4j", "slf4j-api", "1.6.4")
     def slf4jSimple = dependency("org.slf4j", "slf4j-simple", "1.6.4", "jar", "test")
@@ -185,7 +197,7 @@ props.contentFolderName = ask("Folder name under /content which will contain you
 
 // Create AEM 6.2 Editable Templates folders? 
 props.createEditableTemplatesStructure = ''
-if (props.aemVersion == VERSION_62) {
+if (props.aemVersion == VERSION_62 || props.aemVersion == VERSION_63) {
     props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM 6.2 Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
     props.confFolderName = ask("Folder name under /conf for editable templates [${defaultFolderName}]: ", defaultFolderName, "confFolderName")
 }
@@ -235,7 +247,7 @@ if (props.includeAcsAemCommons) {
     def bundle;
     if (props.aemVersion == VERSION_561) {
         bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_5)
-    } else if (props.aemVersion == VERSION_62) {
+    } else if (props.aemVersion == VERSION_62 || props.aemVersion == VERSION_63) {
         bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_62)
     } else {
         bundle = dependency("com.adobe.acs", "acs-aem-commons-bundle", ACS_AEM_COMMONS_VERSION_6)
@@ -250,7 +262,7 @@ if (props.includeAcsAemCommons) {
         def content;
         if (props.aemVersion == VERSION_561) {
             content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_5, "content-package")
-        } else if (props.aemVersion == VERSION_62) {
+        } else if (props.aemVersion == VERSION_62 || props.aemVersion == VERSION_63) {
             content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_62, "content-package")
         } else {
             content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION_6, "content-package")
