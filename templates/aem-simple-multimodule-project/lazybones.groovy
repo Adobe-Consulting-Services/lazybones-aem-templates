@@ -1,12 +1,18 @@
 import uk.co.cacoethes.util.NameType
 import org.apache.commons.io.FileUtils
 
+def writeToFile(File dir, String fileName, String content) {
+    FileUtils.write(new File(dir, fileName), content, fileEncoding)
+}
+
+def props = [:]
+
 props.groupId = ask("Maven group ID for the generated project [apps.experienceaem]: ", "apps.experienceaem", "groupId")
 props.artifactId = ask("Maven artifact ID for the generated reactor project [eaem-project]: ", "eaem-project", "artifactId")
 props.projectName = ask("Human readable project name [Experience AEM Project]: ", "Experience AEM Project", "projectName")
 
 def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL, to: NameType.HYPHENATED).toLowerCase()
-props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
+props.appsFolderName = ask("Folder name under /apps for extensions [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
 
 println "Processing README..."
 processTemplates "README.md", props
@@ -20,6 +26,9 @@ processTemplates "content/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "content/src/main/content/META-INF/vault/definition/.content.xml", props
 
 println "Creating folders..."
+def appsFolderDir = new File(projectDir, "bundle/src/main/java/apps/experienceaem")
+appsFolderDir.mkdirs()
+
 def contentFolderDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}")
 contentFolderDir.mkdirs()
 
@@ -43,4 +52,4 @@ In general, you should load the CSS in the head and the JS just before the end o
 """)
 
 writeToFile(clientLibFolder, "js.txt", "")
-writeToFile(mainClientLibFolder, "css.txt", "")
+writeToFile(clientLibFolder, "css.txt", "")

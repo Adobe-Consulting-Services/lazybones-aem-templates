@@ -8,7 +8,7 @@
     <parent>
         <groupId>${groupId}</groupId>
         <artifactId>${artifactId}</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <!-- ====================================================================== -->
@@ -21,11 +21,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>${groupId}</groupId>
             <artifactId>${artifactId}-bundle</artifactId>
-            <version>${project.version}</version>
+            <version>\${project.version}</version>
         </dependency>
     </dependencies>
+
     <build>
         <resources>
             <resource>
@@ -56,12 +57,12 @@
                     <filterSource>src/main/content/META-INF/vault/filter.xml</filterSource>
                     <embeddeds>
                         <embedded>
-                            <groupId>${project.groupId}</groupId>
+                            <groupId>${groupId}</groupId>
                             <artifactId>${artifactId}-bundle</artifactId>
                             <target>/apps/${appsFolderName}/install</target>
                         </embedded>
                     </embeddeds>
-                    <targetURL>http://${crx.host}:${crx.port}/crx/packmgr/service.jsp</targetURL>
+                    <targetURL>http://\${crx.host}:\${crx.port}/crx/packmgr/service.jsp</targetURL>
                 </configuration>
             </plugin>
         </plugins>
@@ -102,9 +103,9 @@
                                     <goal>install</goal>
                                 </goals>
                                 <configuration>
-                                    <targetURL>http://${publish.crx.host}:${publish.crx.port}/crx/packmgr/service.jsp</targetURL>
-                                    <username>${publish.crx.username}</username>
-                                    <password>${publish.crx.password}</password>
+                                    <targetURL>http://\${publish.crx.host}:\${publish.crx.port}/crx/packmgr/service.jsp</targetURL>
+                                    <userId>\${publish.crx.username}</userId>
+                                    <password>\${publish.crx.password}</password>
                                 </configuration>
                             </execution>
                         </executions>

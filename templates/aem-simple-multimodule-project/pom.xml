@@ -8,7 +8,7 @@
 
     <groupId>${groupId}</groupId>
     <artifactId>${artifactId}</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${projectName} - Reactor Project</name>
@@ -18,9 +18,6 @@
         <maven>3.0.2</maven>
     </prerequisites>
 
-    <!-- ====================================================================== -->
-    <!-- P R O P E R T I E S -->
-    <!-- ====================================================================== -->
     <properties>
         <crx.host>localhost</crx.host>
         <crx.port>4502</crx.port>
@@ -51,19 +48,19 @@
             <dependency>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>org.apache.felix.scr.annotations</artifactId>
-                <version>1.6.0</version>
+                <version>1.9.8</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>biz.aQute</groupId>
                 <artifactId>bndlib</artifactId>
-                <version>1.43.0</version>
+                <version>2.3.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.5.10</version>
+                <version>1.7.6</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -73,28 +70,29 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>javax.jcr</groupId>
                 <artifactId>jcr</artifactId>
                 <version>2.0</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.sling</groupId>
-                <artifactId>org.apache.sling.api</artifactId>
-                <version>2.2.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.sling</groupId>
-                <artifactId>org.apache.sling.jcr.api</artifactId>
-                <version>2.1.0</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.8.1</version>
+                <version>4.11</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.adobe.aem</groupId>
+                <artifactId>uber-jar</artifactId>
+                <version>6.3.0</version>
+                <scope>provided</scope>
+                <classifier>apis</classifier>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -112,6 +110,7 @@
             <layout>default</layout>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>adobe</id>
@@ -122,22 +121,32 @@
     </pluginRepositories>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>com.day.jcr.vault</groupId>
+                <artifactId>content-package-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.7.4</version>
+                    <version>1.20.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.3.7</version>
+                    <version>2.5.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.1</version>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -147,73 +156,45 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>2.8.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>2.5.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.14.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>2.17</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.sling</groupId>
                     <artifactId>maven-sling-plugin</artifactId>
                     <version>2.1.0</version>
                     <configuration>
-                        <username>${crx.username}</username>
-                        <password>${crx.password}</password>
+                        <user>\${crx.username}</user>
+                        <password>\${crx.password}</password>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>com.day.jcr.vault</groupId>
                     <artifactId>content-package-maven-plugin</artifactId>
-                    <version>0.0.20</version>
+                    <version>0.0.24</version>
                     <extensions>true</extensions>
                     <configuration>
                         <failOnError>true</failOnError>
-                        <username>${crx.username}</username>
-                        <password>${crx.password}</password>
+                        <userId>\${crx.username}</userId>
+                        <password>\${crx.password}</password>
                     </configuration>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse
-                    m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
                     <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            org.apache.felix
-                                        </groupId>
-                                        <artifactId>
-                                            maven-scr-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.0.0,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>scr</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore/>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
+                        <excludePackageNames>
+                            *.impl
+                        </excludePackageNames>
                     </configuration>
                 </plugin>
             </plugins>
@@ -240,7 +221,9 @@
                 </plugins>
             </build>
         </profile>
+
     </profiles>
+
     <modules>
         <module>bundle</module>
         <module>content</module>
