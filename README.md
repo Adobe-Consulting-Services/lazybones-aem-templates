@@ -88,3 +88,18 @@ During development, it is necessary to do a local installation of the lazybones 
 
 * From the root directory, run the command `./gradlew installAllTemplates`
 * From a different directory, run the command `lazybones create aem-multimodule-project <SNAPSHOT VERSION> <NEW DIRECTORY NAME>`
+
+# Publishing
+
+To publish, you must have a `gradle.properties` file in the project root with this content:
+
+    bintrayUsername=<your bintray username>
+    bintrayApiKey=<your bintray API key>
+
+Then, update the `VERSION` file for the template you want to publish to be a non-SNAPSHOT version and run
+
+    ./gradlew publishTemplateMyTemplate
+    
+Replacing `publishTemplateMyTemplate` with a camel-cased version of your template name (e.g. `publishTemplateAemMultimoduleProject`)
+
+After publishing, you'll need to log into bintray to release the published ZIP file.
