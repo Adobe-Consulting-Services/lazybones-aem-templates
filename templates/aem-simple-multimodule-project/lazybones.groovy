@@ -14,6 +14,16 @@ def writeToFile(File dir, String fileName, String content) {
     FileUtils.write(new File(dir, fileName), content, fileEncoding)
 }
 
+def createPackageFolders(groupId){
+    def tokens = groupId.split(".")
+
+    def pksFolder = new File(projectDir, "bundle/src/main/java/apps")
+    pksFolder.renameTo(new File("bundle/src/main/java/" + tokens[0]))
+
+    pksFolder = new File(projectDir, "bundle/src/main/java/" + tokens[0] + "/pkgPlaceholder1")
+    pksFolder.renameTo(new File("bundle/src/main/java/" + tokens[0]) + "/" + tokens[1])
+}
+
 def VERSION_62 = "6.2"
 def VERSION_63 = "6.3"
 
@@ -46,8 +56,8 @@ processTemplates "content/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "content/src/main/content/META-INF/vault/definition/.content.xml", props
 
 println "Creating folders..."
-def appsFolderDir = new File(projectDir, "bundle/src/main/java/apps")
-appsFolderDir.mkdirs()
+
+createPackageFolders(props.groupId)
 
 def contentFolderDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}")
 contentFolderDir.mkdirs()
