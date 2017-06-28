@@ -7,7 +7,7 @@
     <entry key="dependencies" />
     <entry key="packageFormatVersion">2</entry>
     <entry key="description">${projectName} Content Package</entry>
-    <entry key="group">Experience AEM</entry>
+    <entry key="group">${packageGroup}</entry>
     <entry key="name">${artifactId}-content</entry>
-    <entry key="path">/etc/packages/Experience AEM/${artifactId}-content-0.0.1-SNAPSHOT.zip</entry>
+    <entry key="path">/etc/packages/${packageGroup}/${artifactId}-content-0.0.1-SNAPSHOT.zip</entry>
 </properties>

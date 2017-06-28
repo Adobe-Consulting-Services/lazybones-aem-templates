@@ -5,9 +5,9 @@
           sling:resourceType="cq/packaging/components/pack/definition"
           buildCount="1"
           cqVersion="6.3"
-          group="Experience AEM"
+          group="${packageGroup}"
           name="${artifactId}-content"
-          path="/etc/packages/Experience AEM/${artifactId}-0.0.1-SNAPSHOT"
+          path="/etc/packages/${packageGroup}/${artifactId}-0.0.1-SNAPSHOT"
           version="0.0.1-SNAPSHOT">
     <filter jcr:primaryType="nt:unstructured">
         <f0

@@ -90,7 +90,7 @@
             <dependency>
                 <groupId>com.adobe.aem</groupId>
                 <artifactId>uber-jar</artifactId>
-                <version>6.3.0</version>
+                <version>${apiDependency}</version>
                 <scope>provided</scope>
                 <classifier>apis</classifier>
             </dependency>

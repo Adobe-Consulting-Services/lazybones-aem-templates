@@ -1,6 +1,6 @@
 # ${projectName}
 
-This a content package project generated using the EAEM Simple Multimodule Lazybones template.
+This a content package project generated using the AEM Simple Multimodule Lazybones template.
 
 ## Building
 

@@ -1,18 +1,38 @@
 import uk.co.cacoethes.util.NameType
 import org.apache.commons.io.FileUtils
 
+def askFromList(String message, String defaultValue, String propertyName, options) {
+    String fullMessage = "${message} Choices are ${options}: "
+    String val = ""
+    while (!options.contains(val)) {
+        val = ask(fullMessage, defaultValue, propertyName)
+    }
+    return val
+}
+
 def writeToFile(File dir, String fileName, String content) {
     FileUtils.write(new File(dir, fileName), content, fileEncoding)
 }
 
+def VERSION_62 = "6.2"
+def VERSION_63 = "6.3"
+
 def props = [:]
 
-props.groupId = ask("Maven group ID for the generated project [apps.experienceaem]: ", "apps.experienceaem", "groupId")
-props.artifactId = ask("Maven artifact ID for the generated reactor project [eaem-project]: ", "eaem-project", "artifactId")
-props.projectName = ask("Human readable project name [Experience AEM Project]: ", "Experience AEM Project", "projectName")
+props.groupId = ask("Maven group ID for the generated project [com.myco.group]: ", "com.myco.group", "groupId")
+props.artifactId = ask("Maven artifact ID for the generated reactor project [myco-project]: ", "myco-project", "artifactId")
+props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
+props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
+props.aemVersion = askFromList("Target AEM version [${VERSION_63}]: ", VERSION_62, "aemVersion", [VERSION_62, VERSION_63])
 
 def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL, to: NameType.HYPHENATED).toLowerCase()
 props.appsFolderName = ask("Folder name under /apps for extensions [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
+
+if (props.aemVersion == VERSION_62) {
+    props.apiDependency = "6.2.0"
+}else if (props.aemVersion == VERSION_63) {
+    props.apiDependency = "6.3.0"
+}
 
 println "Processing README..."
 processTemplates "README.md", props
@@ -26,7 +46,7 @@ processTemplates "content/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "content/src/main/content/META-INF/vault/definition/.content.xml", props
 
 println "Creating folders..."
-def appsFolderDir = new File(projectDir, "bundle/src/main/java/apps/experienceaem")
+def appsFolderDir = new File(projectDir, "bundle/src/main/java/apps")
 appsFolderDir.mkdirs()
 
 def contentFolderDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}")
