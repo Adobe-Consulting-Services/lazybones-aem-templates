@@ -1,4 +1,4 @@
-package package apps.${pkgPlaceholder1}.${pkgPlaceholder2}.impl;
+package apps.${pkgPlaceholder1}.${pkgPlaceholder2}.impl;
 
 import javax.jcr.Repository;
 

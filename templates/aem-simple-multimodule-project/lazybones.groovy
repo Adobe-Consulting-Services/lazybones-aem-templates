@@ -14,14 +14,22 @@ def writeToFile(File dir, String fileName, String content) {
     FileUtils.write(new File(dir, fileName), content, fileEncoding)
 }
 
-def createPackageFolders(groupId){
-    def tokens = groupId.split(".")
+def createPackageFolders(props){
+    def base = "bundle/src/main/java"
+    def tokens = props.groupId.split("\\.")
 
-    def pksFolder = new File(projectDir, "bundle/src/main/java/apps")
-    pksFolder.renameTo(new File("bundle/src/main/java/" + tokens[0]))
+    props.pkgPlaceholder1 = tokens[1]
+    props.pkgPlaceholder2 = tokens[2]
 
-    pksFolder = new File(projectDir, "bundle/src/main/java/" + tokens[0] + "/pkgPlaceholder1")
-    pksFolder.renameTo(new File("bundle/src/main/java/" + tokens[0]) + "/" + tokens[1])
+    def src = rename(base + "/apps", base + "/" + tokens[0])
+    src = rename(src + "/pkgPlaceholder1", src + "/" + tokens[1])
+    rename(src + "/pkgPlaceholder2", src + "/" + tokens[2])
+}
+
+def rename(src, dest){
+    def folder = new File(projectDir, src)
+    folder.renameTo (new File(projectDir, dest))
+    return dest
 }
 
 def VERSION_62 = "6.2"
@@ -56,8 +64,8 @@ processTemplates "content/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "content/src/main/content/META-INF/vault/definition/.content.xml", props
 
 println "Creating folders..."
-
-createPackageFolders(props.groupId)
+createPackageFolders(props)
+processTemplates "**/*.java", props
 
 def contentFolderDir = new File(projectDir, "content/src/main/content/jcr_root/apps/${props.appsFolderName}")
 contentFolderDir.mkdirs()
@@ -73,6 +81,7 @@ writeToFile(clientLibFolder, ".content.xml", """\
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:ClientLibraryFolder"
+    dependencies="[underscore]"
     categories="[cq.authoring.dialog.all]"/>
 """)
 
