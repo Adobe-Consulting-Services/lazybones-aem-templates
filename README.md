@@ -15,9 +15,14 @@ In order to use this project's templates, you must first have lazybones installe
     
 You can also download the distribution package from [BinTray](https://bintray.com/pledbrook/lazybones-templates/lazybones), unzip it, and add it to your PATH.
 
+This project currently contains two templates:
+
+# [Multimodule Template](#using-the-multimodule-template) - A fully-featured template for AEM projects
+# [Simple Multimodule Template](#using-the-simple-multimodule-template) - A pared-down template for an empty bundle and content package project.
+
 # Using the Multimodule Template
 
-Once Lazybones is installed, you can run Lazybones passing in the correct template name:
+To run:
 
     lazybones create aem-multimodule-project <directory name>
 
@@ -43,10 +48,10 @@ Below are all of the options available in the current version. To specify an opt
 | Project Name                                              | My AEM Project                     | projectName                    |
 | Group name for Content Package                            | my-packages                        | packageGroup                   |
 | Target AEM Version                                        | 6.2                                | aemVersion                     |
-| Folder to create under `/apps`                           | my-aem-project                     | appsFolderName                 |
-| Folder to use under `/content`                           | my-aem-project                     | contentFolderName              |
+| Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
+| Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
 | Create AEM 6.2 Editable Templates folders?                | yes                                | createEditableTemplatesStructure |
-| Folder to create under `/conf`                           | my-aem-project                     | confFolderName                 |
+| Folder to create under `/conf`                            | my-aem-project                     | confFolderName                 |
 | Create a site design?                                     | yes                                | createDesign                   |
 | Design folder name                                        | my-aem-project                     | designFolderName               |
 | Create a main client library?                             | yes                                | createMainClientLib            |
@@ -55,7 +60,7 @@ Below are all of the options available in the current version. To specify an opt
 | Create Environment-Specific Config Folders?               | yes                                | createRunModeConfigFolders     |
 | Environment Names                                         | localdev,dev,qa,stage,prod         | envNames                       |
 | Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
-| Set root mapping to `/welcome` (Classic UI)?             | yes in 5.6.1, no in 6.0            | reconfigureRootMapping         |
+| Set root mapping to `/welcome` (Classic UI)?              | yes in 5.6.1, no in 6.0            | reconfigureRootMapping         |
 | Set Default Authoring UI to Classic? (6.0 only)           | yes                                | enableClassicAuthoringAsDefault |
 | Include ACS AEM Commons?                                  | yes                                | includeAcsAemCommons           |
 | Include ACS AEM Commons as a sub-package?                 | yes                                | includeAcsAemCommonsSubPackage |
@@ -71,6 +76,31 @@ Below are all of the options available in the current version. To specify an opt
 | Sling Models Package                                      | ''                                 | slingModelsPackage             |
 | Purge DAM Workflows?                                      | yes                                | purgeDamWorkflows              |
 | DAM Workflow Retention Period (days)                      | 7                                  | purgeDamWorkflowRetention      |
+
+# Using the Simple Multimodule Template
+
+To run:
+
+    lazybones create aem-simple-multimodule-project <directory name>
+
+For example, to create a new project in the directory `my-project`, run
+
+    lazybones create aem-simple-multimodule-project my-project
+
+This will prompt you to answer a number of questions about the project you want created.
+
+## Options
+
+Below are all of the options available in the current version. To specify an option on the command line, pass -P\<parameter name>=\<parameter value>
+
+| Description                                               | Default                            | Parameter Name                 |
+|-----------------------------------------------------------|------------------------------------|--------------------------------|
+| Maven Group ID                                            | com.myco                           | groupId                        |
+| Maven Artifact ID                                         | example-project                    | artifactId                     |
+| Project Name                                              | My AEM Project                     | projectName                    |
+| Group name for Content Package                            | my-packages                        | packageGroup                   |
+| Target AEM Version                                        | 6.2                                | aemVersion                     |
+| Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 
 # Links to ACS AEM Commons Features
 
