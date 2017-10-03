@@ -225,7 +225,7 @@
     </profiles>
 
     <modules>
-        <module>bundle</module>
-        <module>content</module>
+        <module>core</module>
+        <module>ui.apps</module>
     </modules>
 </project>
