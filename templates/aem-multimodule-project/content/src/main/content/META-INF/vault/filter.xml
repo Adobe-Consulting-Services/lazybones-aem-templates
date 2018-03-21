@@ -5,7 +5,7 @@
     <filter root="/apps/sling/servlet/errorhandler"/>
 <% } %>
 <% if (createEditableTemplatesStructure) { %>
-    <filter root="/conf/${appsFolderName}" mode="merge"/>
+    <filter root="/conf/${confFolderName}" mode="merge"/>
 <% } %>
 <% if (createMainClientLib || createDependenciesClientLib) { %>
     <filter root="/etc/clientlibs/${appsFolderName}"/>
