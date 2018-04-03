@@ -7,6 +7,8 @@ tool than Maven Archetypes. Using these templates allows you to both bootstrap y
 AEM project with an appropriate structure, but also enable some of the core features
 from [ACS AEM Commons](http://adobe-consulting-services.github.io/acs-aem-commons/).
 
+> As of version 0.1.0, only AEM 6.3 or higher is supported. If you need to generate a project for an earlier version, you'll have to manually set the version to 0.0.38 on the command line.
+
 # Installing Lazybones
 
 In order to use this project's templates, you must first have lazybones installed. The easiest way to do this is with [sdkman](http://sdkman.io/):
