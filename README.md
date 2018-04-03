@@ -56,8 +56,6 @@ Below are all of the options available in the current version. To specify an opt
 | Create Environment-Specific Config Folders?               | yes                                | createRunModeConfigFolders     |
 | Environment Names                                         | localdev,dev,qa,stage,prod         | envNames                       |
 | Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
-| Set root mapping to `/welcome` (Classic UI)?             | yes in 5.6.1, no in 6.0            | reconfigureRootMapping         |
-| Set Default Authoring UI to Classic? (6.0 only)           | yes                                | enableClassicAuthoringAsDefault |
 | Include ACS AEM Commons?                                  | yes                                | includeAcsAemCommons           |
 | Include ACS AEM Commons as a sub-package?                 | yes                                | includeAcsAemCommonsSubPackage |
 | Enable ACS AEM Commons Error Handler?                     | yes                                | enableErrorHandler             |
