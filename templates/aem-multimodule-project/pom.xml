@@ -347,5 +347,8 @@
     <modules>
         <module>${bundleInBundlesDirectory ? 'bundles/' : ''}${useNewNamingConvention ? 'core' : 'bundle'}</module>
         <module>${useNewNamingConvention ? 'ui.apps' : 'content'}</module>
+        <% if (generateDispatcherArtifact) { %>
+        <module>dispatcher</module>
+        <% } %>
     </modules>
 </project>

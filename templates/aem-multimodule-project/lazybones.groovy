@@ -128,6 +128,14 @@ props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
 props.aemVersion = askFromList("Target AEM version [${VERSION_63}]: ", VERSION_63, "aemVersion", [VERSION_63, VERSION_64])
+props.generateDispatcherArtifact = askBoolean("Include a module to generate dispatcher configuration zip? [no]: ", "no", "generateDispatcherArtifact")
+def defaultDispatcherArtifactId = "${props.artifactId}.dispatcher";
+if (props.generateDispatcherArtifact) {
+    props.dispatcherArtifactId = ask("Maven artifact ID for the generated dispatcher module [${defaultDispatcherArtifactId}]: ", defaultDispatcherArtifactId as String, "dispatcherArtifactId")
+} else {
+    new File(projectDir, "dispatcher").deleteDir()
+}
+
 
 if (props.aemVersion == VERSION_64) {
     def apiDep = dependency("com.adobe.aem", "uber-jar", AEM64_API_VERSION, "jar", "provided", "apis")

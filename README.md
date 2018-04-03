@@ -43,6 +43,8 @@ Below are all of the options available in the current version. To specify an opt
 | Project Name                                              | My AEM Project                     | projectName                    |
 | Group name for Content Package                            | my-packages                        | packageGroup                   |
 | Target AEM Version                                        | 6.3                                | aemVersion                     |
+| Include a module to generate dispatcher configuration zip? | no                                | generateDispatcherArtifact     |
+| Dispatcher Artifact ID                                    | example-project.dispatcher         | dispatcherArtifactId           |
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
 | Create AEM Editable Templates folders?                    | yes                                | createEditableTemplatesStructure |
