@@ -14,10 +14,6 @@
     <name>${projectName} - Reactor Project</name>
     <description>Maven Multimodule project for ${projectName}.</description>
 
-    <prerequisites>
-        <maven>3.0.2</maven>
-    </prerequisites>
-
     <!-- ====================================================================== -->
     <!-- P R O P E R T I E S -->
     <!-- ====================================================================== -->
