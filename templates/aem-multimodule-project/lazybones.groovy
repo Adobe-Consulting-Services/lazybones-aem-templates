@@ -199,9 +199,10 @@ if (props.includeAcsAemCommons) {
     props.contentDependencies.add(bundle)
 
     props.includeAcsAemCommonsSubPackage = askBoolean("Include ACS AEM Commons as a sub-package? [yes]: ", "yes", "includeAcsAemCommonsSubPackage")
+    props.includeAcsAemCommonsMinPackage = askBoolean("Include the 'min' version of ACS AEM Commons (if not, additional dependencies will need to be deployed)? [yes]: ", "yes", "includeAcsAemCommonsMinPackage");
 
     if (props.includeAcsAemCommonsSubPackage) {
-        def content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION, "content-package")
+        def content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION, "content-package", "provided", props.includeAcsAemCommonsMinPackage ? "min" : "")
         props.rootDependencies.add(content)
         props.contentDependencies.add(content)
     }

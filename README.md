@@ -58,6 +58,7 @@ Below are all of the options available in the current version. To specify an opt
 | Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
 | Include ACS AEM Commons?                                  | yes                                | includeAcsAemCommons           |
 | Include ACS AEM Commons as a sub-package?                 | yes                                | includeAcsAemCommonsSubPackage |
+| Include ACS AEM Commons 'min' package                     | yes                                | includeAcsAemCommonsMinPackage |
 | Enable ACS AEM Commons Error Handler?                     | yes                                | enableErrorHandler             |
 | Default Error Page Path                                   | /content/my-aem-project/errors/404 | defaultErrorPath               |
 | Define Error Page Folder for /content/my-aem-project ?    | no                                 | defineErrorPageFolder          |
