@@ -108,12 +108,12 @@ props.bundleDependencies.addAll([osgiCore, osgiCompendium, osgiAnnotations, osgi
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, jstl, jsp, jcr, slf4j])
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "3.10.0"
-def AEM62_API_VERSION = "6.2.0"
+def ACS_AEM_COMMONS_VERSION = "3.14.10"
 def AEM63_API_VERSION = "6.3.0"
+def AEM64_API_VERSION = "6.4.0"
 
-def VERSION_62 = "6.2"
 def VERSION_63 = "6.3"
+def VERSION_63 = "6.4"
 
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
@@ -127,10 +127,10 @@ props.contentArtifactId = ask("Maven artifact ID for the generated content packa
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_63}]: ", VERSION_63, "aemVersion", [VERSION_62, VERSION_63])
+props.aemVersion = askFromList("Target AEM version [${VERSION_63}]: ", VERSION_63, "aemVersion", [VERSION_63, VERSION_64])
 
-if (props.aemVersion == VERSION_62) {
-    def apiDep = dependency("com.adobe.aem", "uber-jar", AEM62_API_VERSION, "jar", "provided", "apis")
+if (props.aemVersion == VERSION_64) {
+    def apiDep = dependency("com.adobe.aem", "uber-jar", AEM64_API_VERSION, "jar", "provided", "apis")
 
     props.rootDependencies.add(apiDep)
     props.bundleDependencies.add(apiDep)
