@@ -42,11 +42,11 @@ Below are all of the options available in the current version. To specify an opt
 | Maven Version                                             | 0.0.1-SNAPSHOT                     | version                        |
 | Project Name                                              | My AEM Project                     | projectName                    |
 | Group name for Content Package                            | my-packages                        | packageGroup                   |
-| Target AEM Version                                        | 6.2                                | aemVersion                     |
 | Folder to create under `/apps`                           | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                           | my-aem-project                     | contentFolderName              |
 | Create AEM 6.2 Editable Templates folders?                | yes                                | createEditableTemplatesStructure |
 | Folder to create under `/conf`                           | my-aem-project                     | confFolderName                 |
+| Target AEM Version                                        | 6.3                                | aemVersion                     |
 | Create a site design?                                     | no                                | createDesign                   |
 | Design folder name                                        | my-aem-project                     | designFolderName               |
 | Create a main client library?                             | yes                                | createMainClientLib            |
