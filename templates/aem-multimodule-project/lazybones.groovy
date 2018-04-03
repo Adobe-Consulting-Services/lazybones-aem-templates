@@ -113,7 +113,7 @@ def AEM63_API_VERSION = "6.3.0"
 def AEM64_API_VERSION = "6.4.0"
 
 def VERSION_63 = "6.3"
-def VERSION_63 = "6.4"
+def VERSION_64 = "6.4"
 
 // Core Maven Information
 props.groupId = ask("Maven group ID for the generated project [com.myco]: ", "com.myco", "groupId")
