@@ -155,7 +155,7 @@ if (props.createEditableTemplatesStructure) {
     props.confFolderName = ask("Folder name under /conf for editable templates [${defaultFolderName}]: ", defaultFolderName, "confFolderName")
 }
 
-props.createDesign = askBoolean("Create a site design (under /etc/designs)? [yes]: ", "yes", "createDesign")
+props.createDesign = askBoolean("Create a site design (under /etc/designs)? [no]: ", "no", "createDesign")
 if (props.createDesign) {
     props.designFolderName = ask("Folder name under /etc/designs which will contain your design settings [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "designFolderName")
     props.enableDhlm = ''
