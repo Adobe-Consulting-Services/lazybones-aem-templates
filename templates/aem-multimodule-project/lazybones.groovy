@@ -161,9 +161,13 @@ if (props.createDesign) {
     props.enableDhlm = ''
 }
 
+props.createClientLibsInApps = askBoolean("Create client libraries under /apps? [yes]:", "yes", "createClientLibsInApps")
+
+def clientLibPath = props.createClientLibsInApps ? "/apps/${props.appsFolderName}/clientlibs" : "/etc/clientlibs/${props.appsFolderName}"
+
 // Client Libraries
-props.createMainClientLib = askBoolean("Do you want to create 'main' client library (at /etc/clientlibs/${props.appsFolderName}/main having the category ${props.appsFolderName}.main)? [yes]: ", "yes", "createMainClientLib")
-props.createDependenciesClientLib = askBoolean("Do you want to create 'dependencies' client library (at /etc/clientlibs/${props.appsFolderName}/dependencies having the category ${props.appsFolderName}.dependencies)? [yes]: ", "yes", "createDependenciesClientLib")
+props.createMainClientLib = askBoolean("Do you want to create 'main' client library (at ${clientLibPath}/main having the category ${props.appsFolderName}.main)? [yes]: ", "yes", "createMainClientLib")
+props.createDependenciesClientLib = askBoolean("Do you want to create 'dependencies' client library (at ${clientLibPath}/dependencies having the category ${props.appsFolderName}.dependencies)? [yes]: ", "yes", "createDependenciesClientLib")
 
 // Code Quality
 props.enableCodeQuality = askBoolean("Include ACS standard code quality settings (PMD, Findbugs, Checkstyle, JSLint, jacoco)? [yes]: ", "yes", "enableCodeQuality")
@@ -433,7 +437,7 @@ if (props.createDesign) {
 if (props.createMainClientLib || props.createDependenciesClientLib) {
     println "Creating clientlibs..."
 
-    def clientLibFolder = new File(projectDir, "ui.apps/src/main/content/jcr_root/etc/clientlibs/${props.appsFolderName}")
+    def clientLibFolder = new File(projectDir, "ui.apps/src/main/content/jcr_root/${clientLibPath}")
     clientLibFolder.mkdirs()
     if (props.createMainClientLib) {
         def mainClientLibFolder = new File(clientLibFolder, "main")
@@ -442,6 +446,7 @@ if (props.createMainClientLib || props.createDependenciesClientLib) {
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:ClientLibraryFolder"
+    ${props.createClientLibsInApps ? "allowProxy=\"{Boolean}true\"" : ""}
     categories="[${props.appsFolderName}.main]"/>
 """)
         writeToFile(mainClientLibFolder, "readme.txt", """\
@@ -465,6 +470,7 @@ In general, you should load the CSS in the head and the JS just before the end o
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:ClientLibraryFolder"
+    ${props.createClientLibsInApps ? "allowProxy=\"{Boolean}true\"" : ""}
     categories="[${props.appsFolderName}.dependencies]"
     embed="[jquery,granite.utils,granite.jquery,cq.jquery,granite.shared,cq.shared,underscore]"/>
 """)

@@ -49,6 +49,7 @@ Below are all of the options available in the current version. To specify an opt
 | Folder to create under `/conf`                            | my-aem-project                     | confFolderName                 |
 | Create a site design?                                     | no                                | createDesign                   |
 | Design folder name                                        | my-aem-project                     | designFolderName               |
+| Create client libraries in /apps                          | yes                                | createClientLibsInApps         |
 | Create a main client library?                             | yes                                | createMainClientLib            |
 | Create a dependencies client library                      | yes                                | createDependenciesClientLib    |
 | Enable code quality checks?                               | yes                                | enableCodeQuality              |
