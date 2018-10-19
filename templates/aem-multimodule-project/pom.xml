@@ -345,6 +345,7 @@
 <% } %>
     </profiles>
     <modules>
+        <module>prereqs</module>
         <module>${bundleInBundlesDirectory ? 'bundles/' : ''}${useNewNamingConvention ? 'core' : 'bundle'}</module>
         <module>${useNewNamingConvention ? 'ui.apps' : 'content'}</module>
         <% if (generateDispatcherArtifact) { %>
