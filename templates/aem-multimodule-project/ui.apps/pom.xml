@@ -96,6 +96,24 @@
                             <target>/apps/${appsFolderName}/install</target>
                         </embedded>
                     </embeddeds>
+<% if (!generatePrereqArtifact) { %>
+                    <subPackages>	
+<% if (includeAcsAemCommons && includeAcsAemCommonsSubPackage) {%>	
+                        <subPackage>	
+                            <groupId>com.adobe.acs</groupId>	
+                            <artifactId>acs-aem-commons-content</artifactId>	
+                            <filter>true</filter>	
+                        </subPackage>	
+<% } %>
+<% if (includeCoreComponents) {%>	
+                        <subPackage>
+                            <groupId>com.adobe.cq</groupId>
+                            <artifactId>core.wcm.components.all</artifactId>
+                            <filter>true</filter>
+                        </subPackage>
+<% } %>
+                    </subPackages>	
+<% }%>
                     <targetURL>http://\${crx.host}:\${crx.port}/crx/packmgr/service.jsp</targetURL>
                     <properties>
                         <acHandling>merge_preserve</acHandling>
