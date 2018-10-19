@@ -109,7 +109,7 @@ props.bundleDependencies.addAll([osgiCore, osgiCompendium, osgiAnnotations, osgi
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, jstl, jsp, jcr, slf4j])
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "3.14.10"
+def ACS_AEM_COMMONS_VERSION = "3.18.2"
 def CORE_COMPONENTS_VERSION = "2.2.0"
 def AEM63_API_VERSION = "6.3.0"
 def AEM64_API_VERSION = "6.4.0"
@@ -131,8 +131,8 @@ props.prereqArtifactId = ask("Maven artifact ID for the generated pre-requisites
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_63}]: ", VERSION_63, "aemVersion", [VERSION_63, VERSION_64])
 props.generateDispatcherArtifact = askBoolean("Include a module to generate dispatcher configuration zip? [no]: ", "no", "generateDispatcherArtifact")
+props.aemVersion = askFromList("Target AEM version [${VERSION_64}]: ", VERSION_64, "aemVersion", [VERSION_63, VERSION_64])
 def defaultDispatcherArtifactId = "${props.artifactId}.dispatcher";
 if (props.generateDispatcherArtifact) {
     props.dispatcherArtifactId = ask("Maven artifact ID for the generated dispatcher module [${defaultDispatcherArtifactId}]: ", defaultDispatcherArtifactId as String, "dispatcherArtifactId")
