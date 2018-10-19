@@ -84,6 +84,7 @@ def props = [:]
 props.rootDependencies = []
 props.bundleDependencies = []
 props.contentDependencies = []
+props.prereqDependencies = []
 
 // common dependencies
 def osgiCore = dependency("org.osgi", "osgi.core", "6.0.0")
@@ -109,6 +110,7 @@ props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsL
 
 // Constants
 def ACS_AEM_COMMONS_VERSION = "3.14.10"
+def CORE_COMPONENTS_VERSION = "2.2.0"
 def AEM63_API_VERSION = "6.3.0"
 def AEM64_API_VERSION = "6.4.0"
 
@@ -124,6 +126,8 @@ def defaultBundleArtifactId = "${props.artifactId}${props.useNewNamingConvention
 props.bundleArtifactId = ask("Maven artifact ID for the generated bundle module [${defaultBundleArtifactId}]: ", defaultBundleArtifactId as String, "bundleArtifactId")
 def defaultContentArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.ui.apps' : '-content'}";
 props.contentArtifactId = ask("Maven artifact ID for the generated content package module [${defaultContentArtifactId}]: ", defaultContentArtifactId as String, "contentArtifactId")
+def defaultPrereqArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.prereqs' : '-prereqs'}";
+props.prereqArtifactId = ask("Maven artifact ID for the generated pre-requisites content package module [${defaultPrereqArtifactId}]: ", defaultPrereqArtifactId as String, "prereqArtifactId")
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
@@ -154,6 +158,8 @@ if (props.aemVersion == VERSION_64) {
 // Folder Names
 def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL, to: NameType.HYPHENATED).toLowerCase()
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
+def defaultPrereqFolderName = "${defaultFolderName}-prereqs"
+props.appsPrereqFolderName = ask("Folder name under /apps for pre-requisites [${defaultPrereqFolderName}]: ", defaultPrereqFolderName, "appsPrereqFolderName")
 props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
 
 // Create Editable Templates folders? 
@@ -198,6 +204,14 @@ if (createEnvRunModeConfigFolders) {
     createAuthorAndPublishPerEnv = askBoolean("Create author and publish runmode directories per environment? [yes]: ", "yes", "createAuthorAndPublishPerEnv")
 }
 
+// Core components
+props.includeCoreComponents = askBoolean("Include Core components as a dependency? [yes]: ", "yes", "includeCoreComponents")
+if (props.includeCoreComponents) {
+    def content = dependency("com.adobe.cq", "core.wcm.components.all", CORE_COMPONENTS_VERSION, "zip", "provided", "")
+    props.rootDependencies.add(content)
+    props.prereqDependencies.add(content)
+}
+
 // ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
 if (props.includeAcsAemCommons) {
@@ -212,7 +226,7 @@ if (props.includeAcsAemCommons) {
     if (props.includeAcsAemCommonsSubPackage) {
         def content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION, "content-package", "provided", props.includeAcsAemCommonsMinPackage ? "min" : "")
         props.rootDependencies.add(content)
-        props.contentDependencies.add(content)
+        props.prereqDependencies.add(content)
     }
     props.enableErrorHandler = askBoolean("Do you want to enable the ACS AEM Commons Error Handler? [yes]: ", "yes", "enableErrorHandler")
 
@@ -260,6 +274,11 @@ println "Processing package metafiles..."
 processTemplates "ui.apps/src/main/content/META-INF/vault/properties.xml", props
 processTemplates "ui.apps/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "ui.apps/src/main/content/META-INF/vault/definition/.content.xml", props
+
+println "Processing pre-requisite package metafiles..."
+processTemplates "prereqs/src/main/content/META-INF/vault/properties.xml", props
+processTemplates "prereqs/src/main/content/META-INF/vault/filter.xml", props
+processTemplates "prereqs/src/main/content/META-INF/vault/definition/.content.xml", props
 
 println "Creating folders..."
 def componentsDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/components")
