@@ -156,6 +156,14 @@ def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL,
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
 props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
 
+props.generateConfigArtifact = askBoolean("Include a separate module for configurations? [no]: ", "no", "generateConfigArtifact")
+if (props.generateConfigArtifact) {
+    def defaultConfigArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.config' : '-config'}";
+    props.configArtifactId = ask("Maven artifact ID for the generated configuration content package module [${defaultConfigArtifactId}]: ", defaultConfigArtifactId as String, "configArtifactId")
+} else {
+    new File(projectDir, "config").deleteDir()
+}
+
 // Create Editable Templates folders? 
 props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
 
@@ -261,6 +269,13 @@ processTemplates "ui.apps/src/main/content/META-INF/vault/properties.xml", props
 processTemplates "ui.apps/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "ui.apps/src/main/content/META-INF/vault/definition/.content.xml", props
 
+if (props.generateConfigArtifact) {
+    println "Processing config package metafiles..."
+    processTemplates "config/src/main/content/META-INF/vault/properties.xml", props
+    processTemplates "config/src/main/content/META-INF/vault/filter.xml", props
+    processTemplates "config/src/main/content/META-INF/vault/definition/.content.xml", props
+}
+
 println "Creating folders..."
 def componentsDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/components")
 componentsDir.mkdirs()
@@ -270,21 +285,25 @@ new File(componentsDir, "page").mkdir()
 def templatesDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/templates")
 templatesDir.mkdirs()
 
-def configDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/config")
+def configDirBase = "ui.apps"
+if (props.generateConfigArtifact) {
+    configDirBase = "config"
+} 
+def configDir = new File(projectDir, "${configDirBase}/src/main/content/jcr_root/apps/${props.appsFolderName}/config")
 configDir.mkdirs()
-def authorConfigDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/config.author")
+def authorConfigDir = new File(projectDir, "${configDirBase}/src/main/content/jcr_root/apps/${props.appsFolderName}/config.author")
 authorConfigDir.mkdirs()
-def publishConfigDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish")
+def publishConfigDir = new File(projectDir, "${configDirBase}/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish")
 publishConfigDir.mkdirs()
 
 if (createEnvRunModeConfigFolders) {
     for (int i = 0; i < envNames.length; i++) {
-        def dir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/config.${envNames[i]}")
+        def dir = new File(projectDir, "${configDirBase}/src/main/content/jcr_root/apps/${props.appsFolderName}/config.${envNames[i]}")
         dir.mkdir()
         if (createAuthorAndPublishPerEnv) {
-            dir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/config.author.${envNames[i]}")
+            dir = new File(projectDir, "${configDirBase}/src/main/content/jcr_root/apps/${props.appsFolderName}/config.author.${envNames[i]}")
             dir.mkdir()
-            dir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish.${envNames[i]}")
+            dir = new File(projectDir, "${configDirBase}/src/main/content/jcr_root/apps/${props.appsFolderName}/config.publish.${envNames[i]}")
             dir.mkdir()
         }
     }

@@ -14,7 +14,11 @@
             jcr:primaryType="nt:unstructured"
             mode="replace"
             root="/apps/${appsFolderName}"
+<% if (generateConfigArtifact) { %>
+            rules="[exclude:/apps/${appsFolderName}/config(.*)?]" />
+<% } else { %>
             rules="[]"/>
+<% } %>
 <% if (includeAcsAemCommons && enableErrorHandler) { %>
         <f1
             jcr:primaryType="nt:unstructured"
