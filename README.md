@@ -49,6 +49,8 @@ Below are all of the options available in the current version. To specify an opt
 | Dispatcher Artifact ID                                    | example-project.dispatcher         | dispatcherArtifactId           |
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
+| Include a separate module for configurations              | no                                 | generateConfigArtifact         |
+| Config Artifact ID                                        | example-project.config             | configArtifactId               |
 | Create AEM Editable Templates folders?                    | yes                                | createEditableTemplatesStructure |
 | Folder to create under `/conf`                            | my-aem-project                     | confFolderName                 |
 | Create a site design?                                     | no                                 | createDesign                   |
