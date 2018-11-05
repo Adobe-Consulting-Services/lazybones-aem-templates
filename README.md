@@ -49,6 +49,10 @@ Below are all of the options available in the current version. To specify an opt
 | Dispatcher Artifact ID                                    | example-project.dispatcher         | dispatcherArtifactId           |
 | Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
 | Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
+| Include a module for pre-requisite packages and bundles?  | no                                 | generatePrereqArtifact         |
+| Include Core components as a dependency?                  | yes                                | includeCoreComponents          |
+| Pre-requisites Artifact ID                                | example-project.prereqs            | prereqArtifactId               |
+| Folder name under `/apps` for pre-requisites              | my-aem-project-prereqs             | appsPrereqFolderName           |
 | Create AEM Editable Templates folders?                    | yes                                | createEditableTemplatesStructure |
 | Folder to create under `/conf`                            | my-aem-project                     | confFolderName                 |
 | Create a site design?                                     | no                                 | createDesign                   |

@@ -84,6 +84,7 @@ def props = [:]
 props.rootDependencies = []
 props.bundleDependencies = []
 props.contentDependencies = []
+props.prereqDependencies = []
 
 // common dependencies
 def osgiCore = dependency("org.osgi", "osgi.core", "6.0.0")
@@ -108,7 +109,8 @@ props.bundleDependencies.addAll([osgiCore, osgiCompendium, osgiAnnotations, osgi
 props.contentDependencies.addAll([osgiCore, osgiCompendium, servletApi, commonsLang3, jstl, jsp, jcr, slf4j])
 
 // Constants
-def ACS_AEM_COMMONS_VERSION = "3.14.10"
+def ACS_AEM_COMMONS_VERSION = "3.18.2"
+def CORE_COMPONENTS_VERSION = "2.2.0"
 def AEM63_API_VERSION = "6.3.0"
 def AEM64_API_VERSION = "6.4.0"
 
@@ -127,8 +129,8 @@ props.contentArtifactId = ask("Maven artifact ID for the generated content packa
 props.version = ask("Maven version for generated project [0.0.1-SNAPSHOT]: ", "0.0.1-SNAPSHOT", "version")
 props.projectName = ask("Human readable project name [My AEM Project]: ", "My AEM Project", "projectName")
 props.packageGroup = ask("Group name for Content Package [my-packages]: ", "my-packages", "packageGroup")
-props.aemVersion = askFromList("Target AEM version [${VERSION_63}]: ", VERSION_63, "aemVersion", [VERSION_63, VERSION_64])
 props.generateDispatcherArtifact = askBoolean("Include a module to generate dispatcher configuration zip? [no]: ", "no", "generateDispatcherArtifact")
+props.aemVersion = askFromList("Target AEM version [${VERSION_64}]: ", VERSION_64, "aemVersion", [VERSION_63, VERSION_64])
 def defaultDispatcherArtifactId = "${props.artifactId}.dispatcher";
 if (props.generateDispatcherArtifact) {
     props.dispatcherArtifactId = ask("Maven artifact ID for the generated dispatcher module [${defaultDispatcherArtifactId}]: ", defaultDispatcherArtifactId as String, "dispatcherArtifactId")
@@ -155,6 +157,16 @@ if (props.aemVersion == VERSION_64) {
 def defaultFolderName = transformText(props.projectName, from: NameType.NATURAL, to: NameType.HYPHENATED).toLowerCase()
 props.appsFolderName = ask("Folder name under /apps for components and templates [${defaultFolderName}]: ", defaultFolderName, "appsFolderName")
 props.contentFolderName = ask("Folder name under /content which will contain your site [${defaultFolderName}] (Don't worry, you can always add more, this is just for some default configuration.): ", defaultFolderName, "contentFolderName")
+
+props.generatePrereqArtifact = askBoolean("Include a module for pre-requisite packages and bundles? [no]: ", "no", "generatePrereqArtifact")
+if (props.generatePrereqArtifact) {
+    def defaultPrereqArtifactId = "${props.artifactId}${props.useNewNamingConvention ? '.prereqs' : '-prereqs'}";
+    props.prereqArtifactId = ask("Maven artifact ID for the generated pre-requisites content package module [${defaultPrereqArtifactId}]: ", defaultPrereqArtifactId as String, "prereqArtifactId")
+    def defaultPrereqFolderName = "${defaultFolderName}-prereqs"
+    props.appsPrereqFolderName = ask("Folder name under /apps for pre-requisites [${defaultPrereqFolderName}]: ", defaultPrereqFolderName, "appsPrereqFolderName")
+} else {
+    new File(projectDir, "prereqs").deleteDir()
+}
 
 // Create Editable Templates folders? 
 props.createEditableTemplatesStructure = askBoolean("Would you like to create AEM Editable Templates folders? [yes]: ", "yes", "createEditableTemplatesStructure");
@@ -198,6 +210,18 @@ if (createEnvRunModeConfigFolders) {
     createAuthorAndPublishPerEnv = askBoolean("Create author and publish runmode directories per environment? [yes]: ", "yes", "createAuthorAndPublishPerEnv")
 }
 
+// Core components
+props.includeCoreComponents = askBoolean("Include Core components as a dependency? [yes]: ", "yes", "includeCoreComponents")
+if (props.includeCoreComponents) {
+    def content = dependency("com.adobe.cq", "core.wcm.components.all", CORE_COMPONENTS_VERSION, "zip", "provided", "")
+    props.rootDependencies.add(content)
+    if (props.generatePrereqArtifact) {
+        props.prereqDependencies.add(content)
+    } else {
+        props.contentDependencies.add(content)
+    }
+}
+
 // ACS AEM Commons
 props.includeAcsAemCommons = askBoolean("Include ACS AEM Commons as a dependency? [yes]: ", "yes", "includeAcsAemCommons")
 if (props.includeAcsAemCommons) {
@@ -212,7 +236,11 @@ if (props.includeAcsAemCommons) {
     if (props.includeAcsAemCommonsSubPackage) {
         def content = dependency("com.adobe.acs", "acs-aem-commons-content", ACS_AEM_COMMONS_VERSION, "content-package", "provided", props.includeAcsAemCommonsMinPackage ? "min" : "")
         props.rootDependencies.add(content)
-        props.contentDependencies.add(content)
+        if (props.generatePrereqArtifact) {
+            props.prereqDependencies.add(content)
+        } else {
+            props.contentDependencies.add(content)
+        }
     }
     props.enableErrorHandler = askBoolean("Do you want to enable the ACS AEM Commons Error Handler? [yes]: ", "yes", "enableErrorHandler")
 
@@ -260,6 +288,13 @@ println "Processing package metafiles..."
 processTemplates "ui.apps/src/main/content/META-INF/vault/properties.xml", props
 processTemplates "ui.apps/src/main/content/META-INF/vault/filter.xml", props
 processTemplates "ui.apps/src/main/content/META-INF/vault/definition/.content.xml", props
+
+if (props.generatePrereqArtifact) {
+    println "Processing pre-requisite package metafiles..."
+    processTemplates "prereqs/src/main/content/META-INF/vault/properties.xml", props
+    processTemplates "prereqs/src/main/content/META-INF/vault/filter.xml", props
+    processTemplates "prereqs/src/main/content/META-INF/vault/definition/.content.xml", props
+}
 
 println "Creating folders..."
 def componentsDir = new File(projectDir, "ui.apps/src/main/content/jcr_root/apps/${props.appsFolderName}/components")
