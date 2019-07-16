@@ -7,6 +7,8 @@ tool than Maven Archetypes. Using these templates allows you to both bootstrap y
 AEM project with an appropriate structure, but also enable some of the core features
 from [ACS AEM Commons](http://adobe-consulting-services.github.io/acs-aem-commons/).
 
+> As of version 0.1.0, only AEM 6.3 or higher is supported. If you need to generate a project for an earlier version, you'll have to manually set the version to 0.0.38 on the command line.
+
 # Installing Lazybones
 
 In order to use this project's templates, you must first have lazybones installed. The easiest way to do this is with [sdkman](http://sdkman.io/):
@@ -42,23 +44,25 @@ Below are all of the options available in the current version. To specify an opt
 | Maven Version                                             | 0.0.1-SNAPSHOT                     | version                        |
 | Project Name                                              | My AEM Project                     | projectName                    |
 | Group name for Content Package                            | my-packages                        | packageGroup                   |
-| Target AEM Version                                        | 6.1                                | aemVersion                     |
-| Folder to create under `/apps`                           | my-aem-project                     | appsFolderName                 |
-| Folder to use under `/content`                           | my-aem-project                     | contentFolderName              |
-| Create AEM 6.2 Editable Templates folders?                | yes                                | createEditableTemplatesStructure |
-| Folder to create under `/conf`                           | my-aem-project                     | confFolderName                 |
-| Create a site design?                                     | yes                                | createDesign                   |
+| Target AEM Version                                        | 6.3                                | aemVersion                     |
+| Include a module to generate dispatcher configuration zip? | no                                | generateDispatcherArtifact     |
+| Dispatcher Artifact ID                                    | example-project.dispatcher         | dispatcherArtifactId           |
+| Folder to create under `/apps`                            | my-aem-project                     | appsFolderName                 |
+| Folder to use under `/content`                            | my-aem-project                     | contentFolderName              |
+| Create AEM Editable Templates folders?                    | yes                                | createEditableTemplatesStructure |
+| Folder to create under `/conf`                            | my-aem-project                     | confFolderName                 |
+| Create a site design?                                     | no                                 | createDesign                   |
 | Design folder name                                        | my-aem-project                     | designFolderName               |
+| Create client libraries in /apps                          | yes                                | createClientLibsInApps         |
 | Create a main client library?                             | yes                                | createMainClientLib            |
 | Create a dependencies client library                      | yes                                | createDependenciesClientLib    |
 | Enable code quality checks?                               | yes                                | enableCodeQuality              |
 | Create Environment-Specific Config Folders?               | yes                                | createRunModeConfigFolders     |
 | Environment Names                                         | localdev,dev,qa,stage,prod         | envNames                       |
 | Create Author and Publish Config Folders per Environment? | yes                                | createAuthorAndPublishPerEnv   |
-| Set root mapping to `/welcome` (Classic UI)?             | yes in 5.6.1, no in 6.0            | reconfigureRootMapping         |
-| Set Default Authoring UI to Classic? (6.0 only)           | yes                                | enableClassicAuthoringAsDefault |
 | Include ACS AEM Commons?                                  | yes                                | includeAcsAemCommons           |
 | Include ACS AEM Commons as a sub-package?                 | yes                                | includeAcsAemCommonsSubPackage |
+| Include ACS AEM Commons 'min' package                     | yes                                | includeAcsAemCommonsMinPackage |
 | Enable ACS AEM Commons Error Handler?                     | yes                                | enableErrorHandler             |
 | Default Error Page Path                                   | /content/my-aem-project/errors/404 | defaultErrorPath               |
 | Define Error Page Folder for /content/my-aem-project ?    | no                                 | defineErrorPageFolder          |
@@ -88,3 +92,18 @@ During development, it is necessary to do a local installation of the lazybones 
 
 * From the root directory, run the command `./gradlew installAllTemplates`
 * From a different directory, run the command `lazybones create aem-multimodule-project <SNAPSHOT VERSION> <NEW DIRECTORY NAME>`
+
+# Publishing
+
+To publish, you must have a `gradle.properties` file in the project root with this content:
+
+    bintrayUsername=<your bintray username>
+    bintrayApiKey=<your bintray API key>
+
+Then, update the `VERSION` file for the template you want to publish to be a non-SNAPSHOT version and run
+
+    ./gradlew publishTemplateMyTemplate
+    
+Replacing `publishTemplateMyTemplate` with a camel-cased version of your template name (e.g. `publishTemplateAemMultimoduleProject`)
+
+After publishing, you'll need to log into bintray to release the published ZIP file.

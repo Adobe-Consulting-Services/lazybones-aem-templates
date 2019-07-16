@@ -1,0 +1,1 @@
+For the files in this archive to be used properly, /etc/sysconfig/httpd must be configured with the proper replacement variables referenced in these files.

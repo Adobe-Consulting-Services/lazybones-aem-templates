@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
     <filter root="/apps/${appsFolderName}"/>
-<% if (includeAcsAemCommons && enableErrorHandler) { %>
-    <filter root="/apps/sling/servlet/errorhandler"/>
-<% } %>
 <% if (createEditableTemplatesStructure) { %>
     <filter root="/conf/${appsFolderName}" mode="merge"/>
 <% } %>
@@ -12,11 +9,11 @@
 <% } %>
 <% if (createDesign) { %>
     <filter root="/etc/designs/${designFolderName}">
+        <include pattern="/etc/designs/${designFolderName}"/>
         <include pattern="/etc/designs/${designFolderName}/jcr:content"/>
-<% if (includeAcsAemCommons && enableDhlm) { %>
-        <include pattern="/etc/designs/${designFolderName}/jcr:content/clientlibs"/>
-        <include pattern="/etc/designs/${designFolderName}/jcr:content/clientlibs/.*"/>
-<% } %>
     </filter>
+<% } %>
+<% if (createSiteRoot) { %>
+    <filter root="/content/${contentFolderName}" mode="merge" />
 <% } %>
 </workspaceFilter>
