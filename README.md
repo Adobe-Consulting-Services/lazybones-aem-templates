@@ -1,3 +1,5 @@
+> Note: Although you can use this to build projects for AEM 6.3 or higher, you may also consider using [Adobe's AEM Archetype](https://github.com/adobe/aem-project-archetype) (maintained by Adobe Inc) to build projects for AEM 6.5 or higher.
+
 Adobe Consulting AEM Lazybones Templates
 ------------------------------------
 
