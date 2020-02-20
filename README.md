@@ -1,3 +1,6 @@
+> This project is deprecated. Users are encouraged to use https://github.com/adobe/aem-project-archetype 
+
+
 Adobe Consulting AEM Lazybones Templates
 ------------------------------------
 
