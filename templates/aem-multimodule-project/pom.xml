@@ -345,6 +345,9 @@
 <% } %>
     </profiles>
     <modules>
+        <% if (generateConfigArtifact) { %>
+        <module>config</module>
+        <% } %>
         <module>${bundleInBundlesDirectory ? 'bundles/' : ''}${useNewNamingConvention ? 'core' : 'bundle'}</module>
         <module>${useNewNamingConvention ? 'ui.apps' : 'content'}</module>
         <% if (generateDispatcherArtifact) { %>
